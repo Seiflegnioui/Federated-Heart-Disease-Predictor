@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Federated Heart Disease Predictor</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-mesh">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.77.78-.77-.78a5.4 5.4 0 0 0-7.65 0C1.46 6.7 1.33 10.28 4 13l8 8 8-8c2.67-2.72 2.54-6.3.42-8.42z"></path>
+                    <path class="pulse" d="M3 12h4l3-9 5 18 3-9h3"></path>
+                </svg>
+            </div>
+            <div class="header-text">
+                <h1>CardioSync AI</h1>
+                <p>Federated Diagnostic Dashboard</p>
+            </div>
+        </header>
+
+        <!-- Quick Actions -->
+        <section class="quick-actions glass-card">
+            <span class="section-badge">Testing Modules</span>
+            <div class="btn-group">
+                <button type="button" class="action-btn btn-danger" id="btn-high-risk">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                    Simulate High Risk
+                </button>
+                <button type="button" class="action-btn btn-success" id="btn-low-risk">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                    Simulate Healthy
+                </button>
+            </div>
+        </section>
+
+        <!-- Main Form -->
+        <form id="prediction-form" class="diagnostic-form">
+            
+            <div class="form-sections">
+                <!-- Demographics -->
+                <div class="form-group glass-card">
+                    <div class="group-header">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        <h2>Demographics</h2>
+                    </div>
+                    <div class="grid-2">
+                        <div class="input-field">
+                            <label for="age">Age (Years)</label>
+                            <input type="number" id="age" name="age" required placeholder="e.g., 54">
+                        </div>
+                        <div class="input-field">
+                            <label for="sex">Biological Sex</label>
+                            <div class="select-wrapper">
+                                <select id="sex" name="sex" required>
+                                    <option value="1">Male</option>
+                                    <option value="0">Female</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vitals & Symptoms -->
+                <div class="form-group glass-card">
+                    <div class="group-header">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+                        <h2>Vitals & Symptoms</h2>
+                    </div>
+                    <div class="grid-2">
+                        <div class="input-field">
+                            <label for="cp">Chest Pain Type</label>
+                            <div class="select-wrapper">
+                                <select id="cp" name="cp" required>
+                                    <option value="0">Typical Angina</option>
+                                    <option value="1">Atypical Angina</option>
+                                    <option value="2">Non-anginal Pain</option>
+                                    <option value="3">Asymptomatic</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="input-field">
+                            <label for="trestbps">Resting BP (mmHg)</label>
+                            <input type="number" id="trestbps" name="trestbps" required placeholder="120">
+                        </div>
+                        <div class="input-field">
+                            <label for="thalach">Max Heart Rate</label>
+                            <input type="number" id="thalach" name="thalach" required placeholder="150">
+                        </div>
+                        <div class="input-field">
+                            <label for="exang">Exercise Angina</label>
+                            <div class="select-wrapper">
+                                <select id="exang" name="exang" required>
+                                    <option value="0">No</option>
+                                    <option value="1">Yes</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lab Results -->
+                <div class="form-group glass-card">
+                    <div class="group-header">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 2v7.31"></path><path d="M14 9.3V1.99"></path><path d="M8.5 2h7"></path><path d="M14 9.3a6.5 6.5 0 1 1-4 0"></path><path d="M5.52 16h10.96"></path></svg>
+                        <h2>Laboratory Data</h2>
+                    </div>
+                    <div class="grid-2">
+                        <div class="input-field">
+                            <label for="chol">Cholesterol (mg/dl)</label>
+                            <input type="number" id="chol" name="chol" required placeholder="200">
+                        </div>
+                        <div class="input-field">
+                            <label for="fbs">Fasting Blood Sugar > 120</label>
+                            <div class="select-wrapper">
+                                <select id="fbs" name="fbs" required>
+                                    <option value="0">False</option>
+                                    <option value="1">True</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="input-field full-width">
+                            <label for="restecg">Resting ECG Results</label>
+                            <div class="select-wrapper">
+                                <select id="restecg" name="restecg" required>
+                                    <option value="0">Normal</option>
+                                    <option value="1">ST-T Wave Abnormality</option>
+                                    <option value="2">Left Ventricular Hypertrophy</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advanced Metrics -->
+                <div class="form-group glass-card">
+                    <div class="group-header">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        <h2>Advanced Diagnostics</h2>
+                    </div>
+                    <div class="grid-2">
+                        <div class="input-field">
+                            <label for="oldpeak">ST Depression (Oldpeak)</label>
+                            <input type="number" step="0.1" id="oldpeak" name="oldpeak" required placeholder="1.0">
+                        </div>
+                        <div class="input-field">
+                            <label for="slope">ST Segment Slope</label>
+                            <div class="select-wrapper">
+                                <select id="slope" name="slope" required>
+                                    <option value="0">Upsloping</option>
+                                    <option value="1">Flat</option>
+                                    <option value="2">Downsloping</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="input-field">
+                            <label for="ca">Major Vessels Colored</label>
+                            <div class="select-wrapper">
+                                <select id="ca" name="ca" required>
+                                    <option value="0">0</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="input-field">
+                            <label for="thal">Thalassemia Type</label>
+                            <div class="select-wrapper">
+                                <select id="thal" name="thal" required>
+                                    <option value="0">Normal</option>
+                                    <option value="1">Fixed Defect</option>
+                                    <option value="2">Reversable Defect</option>
+                                    <option value="3">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="submit-area">
+                <button type="submit" id="predict-btn" class="btn-primary-glow">
+                    <span>Initiate AI Analysis</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </button>
+            </div>
+        </form>
+
+        <!-- Result Overlay -->
+        <div id="result-overlay" class="result-overlay hidden">
+            <div class="result-card">
+                <button type="button" id="close-result" class="close-btn">&times;</button>
+                <div class="result-icon" id="result-icon"></div>
+                <h2 id="result-title">Analysis Complete</h2>
+                <div class="prediction-status" id="prediction-status"></div>
+                
+                <div class="advanced-stats">
+                    <span class="stat-label">Federated Model Confidence</span>
+                    <div class="metric-circle">
+                        <svg viewBox="0 0 36 36" class="circular-chart">
+                            <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            <path class="circle" id="circle-progress" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        </svg>
+                        <div class="percentage" id="prob-text">0%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
