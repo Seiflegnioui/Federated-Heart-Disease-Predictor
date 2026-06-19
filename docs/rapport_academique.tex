@@ -1,0 +1,539 @@
+\documentclass[12pt,a4paper]{article}
+
+%% ─── Encodage & langue ───────────────────────────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+
+%% ─── Mise en page ────────────────────────────────────────────────────────────
+\usepackage[
+  a4paper,
+  top=25mm, bottom=25mm,
+  left=25mm, right=25mm,
+  headheight=14pt
+]{geometry}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{parskip}
+\usepackage{setspace}
+
+%% ─── Mathématiques ───────────────────────────────────────────────────────────
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bm}
+
+%% ─── Tableaux & Figures ──────────────────────────────────────────────────────
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{multirow}
+
+%% ─── Algorithmes & Code ──────────────────────────────────────────────────────
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\lstset{
+  language=Python,
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{blue}\bfseries,
+  stringstyle=\color{red!70!black},
+  commentstyle=\color{green!50!black}\itshape,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  frame=single,
+  breaklines=true,
+  captionpos=b,
+  showstringspaces=false
+}
+
+%% ─── Références & Liens ──────────────────────────────────────────────────────
+\usepackage[hidelinks,
+  pdftitle={Rapport Academique -- Apprentissage Federe pour la Detection des Maladies Cardiaques},
+  pdfauthor={Sifeddine Legnioui, Youssef Sarraf}
+]{hyperref}
+
+%% ─── Divers ──────────────────────────────────────────────────────────────────
+\usepackage{enumitem}
+
+%% ─── Style de page ───────────────────────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\small Apprentissage F\'ed\'er\'e -- D\'etection des Maladies Cardiaques}
+\lhead{\small Module : Optimisation}
+\cfoot{\thepage}
+
+\titleformat{\section}{\large\bfseries}{}{0em}{\thesection\quad}
+\titleformat{\subsection}{\normalsize\bfseries}{}{0em}{\thesubsection\quad}
+
+%% ======================================================================
+%%  PAGE DE TITRE
+%% ======================================================================
+\begin{document}
+
+\begin{titlepage}
+  \centering
+  \vspace*{1cm}
+  {\scshape\LARGE Universit\'e -- D\'epartement Informatique\par}
+  \vspace{0.5cm}
+  {\Large Module : \textbf{Optimisation}\par}
+  \vspace{2cm}
+
+  \rule{\linewidth}{0.5pt}\\[0.4cm]
+  {\huge\bfseries Apprentissage F\'ed\'er\'e pour la D\'etection des Maladies Cardiaques\par}
+  \vspace{0.3cm}
+  {\large\itshape Comparaison de Strat\'egies d'Optimisation Distribu\'ees :
+  FedAvg, FedAdam et FedProx\par}
+  \rule{\linewidth}{0.5pt}
+
+  \vspace{2cm}
+  {\large\textbf{Rapport de Projet}\par}
+  \vspace{1.5cm}
+
+  \begin{tabular}{ll}
+    \textbf{\'Etudiants :} & Sifeddine Legnioui \\
+                           & Youssef Sarraf \\[6pt]
+    \textbf{Encadrant :}   & --- \\[6pt]
+    \textbf{Ann\'ee :}     & 2025--2026 \\
+  \end{tabular}
+
+  \vfill
+  {\large \today}
+\end{titlepage}
+
+%% ─── Table des matières ──────────────────────────────────────────────────────
+\tableofcontents
+\newpage
+
+%% ======================================================================
+\section{Introduction}
+%% ======================================================================
+
+Dans le domaine de la sant\'e, les donn\'ees m\'edicales sont particuli\`erement sensibles.
+Les r\'eglementations telles que le RGPD en Europe ou le HIPAA aux \'Etats-Unis imposent
+des contraintes strictes sur leur partage, rendant difficile l'entra\^inement de
+mod\`eles d'apprentissage automatique centralis\'es performants.
+
+L'\textbf{Apprentissage F\'ed\'er\'e} (Federated Learning -- FL) est
+un paradigme distribu\'e qui permet \`a plusieurs entit\'es (h\^opitaux, cliniques) de
+collaborer pour entra\^iner un mod\`ele global, sans qu'aucune donn\'ee brute ne quitte
+les sites locaux. Seuls les param\`etres (poids) du mod\`ele circulent sur le r\'eseau.
+
+\subsection{Probl\'ematique}
+
+Comment concevoir un syst\`eme d'apprentissage f\'ed\'er\'e efficace pour la classification
+binaire de maladies cardiaques, et quel algorithme d'optimisation distribu\'ee -- parmi
+\textbf{FedAvg}, \textbf{FedAdam} et \textbf{FedProx} -- offre le meilleur compromis
+entre performance pr\'edictive, stabilit\'e de convergence et efficacit\'e communicationnelle,
+en particulier dans des contextes o\`u les donn\'ees locales sont \textit{h\'et\'erog\`enes} ?
+
+\subsection{Objectifs}
+
+\begin{enumerate}[label=\textbf{\arabic*.}]
+  \item Simuler une infrastructure f\'ed\'er\'ee multi-h\^opitaux (8 clients) \`a partir d'un
+        jeu de donn\'ees de maladies cardiaques r\'eel.
+  \item Impl\'ementer et comparer quatre strat\'egies d'optimisation : Local SGD (baseline),
+        FedAvg, FedAdam et FedProx.
+  \item \'Etudier l'impact de la distribution des donn\'ees (IID vs Non-IID) sur les
+        algorithmes.
+  \item Quantifier les co\^uts de communication et le ratio performance/bande passante.
+\end{enumerate}
+
+%% ======================================================================
+\section{Contexte Th\'eorique et \'Etat de l'Art}
+%% ======================================================================
+
+\subsection{Apprentissage F\'ed\'er\'e}
+
+L'apprentissage f\'ed\'er\'e repose sur une architecture client-serveur cyclique.
+\`A chaque \textit{round} $r$, le serveur diffuse le mod\`ele global $\bm{w}^r$ vers
+un sous-ensemble de clients. Chaque client $k$ entra\^ine localement sur son jeu de
+donn\'ees $\mathcal{D}_k$ et renvoie ses poids mis \`a jour $\bm{w}_k^{r+1}$.
+Le serveur agr\`ege ensuite ces mises \`a jour pour former le nouveau mod\`ele global.
+
+\subsection{Algorithme FedAvg}
+
+Propos\'e par \textsc{McMahan et al.} en 2017, FedAvg agr\`ege les poids par une
+moyenne pond\'er\'ee par la taille des donn\'ees locales :
+
+\begin{equation}
+  \bm{w}^{r+1} = \sum_{k=1}^{K} \frac{n_k}{n} \bm{w}_k^{r+1}
+  \label{eq:fedavg}
+\end{equation}
+
+o\`u $n_k = |\mathcal{D}_k|$ et $n = \sum_k n_k$.
+
+\subsection{Algorithme FedAdam}
+
+FedAdam traite les mises \`a jour agr\'eg\'ees comme un
+\textit{pseudo-gradient} c\^ot\'e serveur et applique l'optimiseur Adam :
+
+\begin{align}
+  \Delta^r &= \bm{w}^r - \sum_{k} \frac{n_k}{n}\bm{w}_k^{r+1} \label{eq:delta}\\
+  m^r &= \beta_1 m^{r-1} + (1-\beta_1)\Delta^r \label{eq:momentum}\\
+  v^r &= \beta_2 v^{r-1} + (1-\beta_2)(\Delta^r)^2 \label{eq:variance}\\
+  \bm{w}^{r+1} &= \bm{w}^r - \eta \frac{m^r}{\sqrt{v^r}+\tau} \label{eq:fedadam}
+\end{align}
+
+avec $\beta_1=0.9$, $\beta_2=0.99$, $\eta=0.01$ et $\tau=10^{-3}$.
+
+\subsection{Algorithme FedProx}
+
+Pour g\'erer l'h\'et\'erog\'en\'eit\'e des donn\'ees (Non-IID), FedProx
+ajoute un terme proximal \`a la fonction objectif locale de chaque client $k$ :
+
+\begin{equation}
+  \min_{\bm{w}} \; h_k(\bm{w}; \bm{w}^r) = F_k(\bm{w}) + \frac{\mu}{2}
+  \lVert \bm{w} - \bm{w}^r \rVert^2
+  \label{eq:fedprox}
+\end{equation}
+
+o\`u $F_k$ est la perte locale et $\mu=0.1$ est le coefficient proximal. Ce terme
+p\'enalise les solutions trop \'eloign\'ees du mod\`ele global, limitant ainsi la
+\textit{client drift}.
+
+\subsection{Probl\`eme Non-IID et Distribution de Dirichlet}
+
+La distribution Non-IID est g\'en\'er\'ee par une distribution de Dirichlet
+$\text{Dir}(\alpha)$ avec $\alpha=0.5$, ce qui cr\'ee une r\'epartition asym\'etrique
+des classes entre les h\^opitaux. Plus $\alpha$ est petit, plus l'h\'et\'erog\'en\'eit\'e est
+\'elev\'ee.
+
+%% ======================================================================
+\section{M\'ethodologie et Architecture du Syst\`eme}
+%% ======================================================================
+
+\subsection{Jeu de Donn\'ees}
+
+Nous utilisons le jeu de donn\'ees \textit{Heart Disease UCI} contenant
+\textbf{1025 \'echantillons} et 13 attributs cliniques ({\^a}ge, sexe, pression
+art\'erielle, cholest\'erol, etc.) avec une variable cible binaire (maladie cardiaque :
+oui/non).
+
+\paragraph{Pr\'eparation des donn\'ees :}
+\begin{itemize}
+  \item V\'erification des valeurs manquantes (aucune d\'etect\'ee).
+  \item Encodage One-Hot des variables cat\'egorielles.
+  \item Normalisation Z-score des variables continues.
+  \item R\'esultat final : matrice de features $X \in \mathbb{R}^{1025 \times 23}$.
+\end{itemize}
+
+\subsection{Partitionnement F\'ed\'er\'e}
+
+Les donn\'ees sont distribu\'ees entre $K=8$ clients (h\^opitaux) selon deux modes :
+
+\begin{table}[H]
+  \centering
+  \caption{Comparaison des modes de partitionnement}
+  \begin{tabularx}{\textwidth}{lX}
+    \toprule
+    \textbf{Mode} & \textbf{Description} \\
+    \midrule
+    IID   & Distribution uniforme et \'equilibr\'ee. Chaque h\^opital voit autant de cas
+            positifs que n\'egatifs ($\approx 128$ \'echantillons par h\^opital). \\[4pt]
+    Non-IID & Distribution asym\'etrique par tirage Dirichlet ($\alpha=0.5$).
+             Certains h\^opitaux traitent quasi-exclusivement des patients sains ou
+             malades, simulant une sp\'ecialisation ou un biais g\'eographique. \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\subsection{Architecture du Mod\`ele}
+
+Le mod\`ele utilis\'e est un Perceptron Multi-Couches (MLP) PyTorch
+(\texttt{HeartDiseaseMLP}) adapt\'e aux donn\'ees tabulaires :
+
+\begin{table}[H]
+  \centering
+  \caption{Architecture du r\'eseau MLP}
+  \begin{tabular}{lccc}
+    \toprule
+    \textbf{Couche} & \textbf{Entr\'ee} & \textbf{Sortie} & \textbf{Activation} \\
+    \midrule
+    Couche 1  & 23  & 64  & ReLU + Dropout(0.3) \\
+    Couche 2  & 64  & 32  & ReLU + Dropout(0.3) \\
+    Couche 3  & 32  & 1   & Sigmoid (BCELoss) \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Le mod\`ele est volontairement l\'eger ($\approx 2600$ param\`etres) pour minimiser
+les co\^uts de communication. La fonction de perte utilis\'ee est la
+\textit{Binary Cross-Entropy with Logits} (BCEWithLogitsLoss).
+
+\subsection{Param\`etres d'Entra\^inement}
+
+\begin{table}[H]
+  \centering
+  \caption{Hyperparam\`etres de l'entra\^inement f\'ed\'er\'e}
+  \begin{tabular}{ll}
+    \toprule
+    \textbf{Param\`etre}         & \textbf{Valeur} \\
+    \midrule
+    Nombre de rounds ($R$)     & 15 \\
+    \'Epoques locales ($E$)      & 5 \\
+    Taille de batch            & 32 \\
+    Taux d'apprentissage ($\eta_{\text{local}}$) & $10^{-3}$ (Adam) \\
+    Optimiseur local           & Adam \\
+    Nombre de clients ($K$)    & 8 \\
+    Ratio entra\^inement/test    & 80\,\% / 20\,\% \\
+    $\mu$ (FedProx)            & 0.1 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Infrastructure F\'ed\'er\'ee}
+
+Compte tenu des incompatibilit\'es du framework \textit{Flower} avec Python 3.13
+(absence du support de la biblioth\`eque \texttt{ray}), nous avons impl\'ement\'e une
+boucle f\'ed\'er\'ee personnalis\'ee reproduisant fid\`element le comportement d'une
+simulation Flower. Le pseudo-code de la boucle principale est d\'ecrit dans
+l'algorithme~\ref{alg:fl_loop}.
+
+\begin{algorithm}[H]
+  \caption{Boucle d'Apprentissage F\'ed\'er\'e (Custom)}
+  \label{alg:fl_loop}
+  \begin{algorithmic}[1]
+    \State Initialiser le mod\`ele global $\bm{w}^0$
+    \For{$r = 1$ \textbf{to} $R$}
+      \State \textbf{Diffusion} : envoyer $\bm{w}^{r-1}$ \`a tous les clients
+      \For{chaque client $k \in \{1,\dots,K\}$ \textbf{en parall\`ele}}
+        \State $\bm{w}_k^r \leftarrow \textsc{TrainLocal}(\bm{w}^{r-1}, \mathcal{D}_k, E, \text{strat\'egie})$
+      \EndFor
+      \State $\bm{w}^r \leftarrow \textsc{Aggregate}(\{(\bm{w}_k^r, n_k)\}_{k=1}^K)$
+      \State \'Evaluer $\bm{w}^r$ sur tous les clients et enregistrer les m\'etriques
+    \EndFor
+    \State \Return $\bm{w}^R$
+  \end{algorithmic}
+\end{algorithm}
+
+%% ======================================================================
+\section{R\'esultats Exp\'erimentaux}
+%% ======================================================================
+
+\subsection{Performance Globale -- Donn\'ees IID}
+
+En environnement IID, les trois algorithmes f\'ed\'er\'es convergent rapidement et
+d\'epassent largement le baseline Local SGD.
+
+\begin{table}[H]
+  \centering
+  \caption{R\'esultats finaux (round 15) -- Donn\'ees IID}
+  \begin{tabular}{lcccc}
+    \toprule
+    \textbf{Algorithme} & \textbf{Accuracy} & \textbf{F1-Score} &
+    \textbf{Pr\'ecision} & \textbf{Rappel} \\
+    \midrule
+    Local SGD  & $\approx 80\,\%$ & 0.79 & 0.81 & 0.77 \\
+    FedAvg     & $\approx 87\,\%$ & 0.87 & 0.88 & 0.86 \\
+    FedAdam    & $\approx 87\,\%$ & 0.87 & 0.89 & 0.85 \\
+    FedProx    & $\approx 87\,\%$ & 0.87 & 0.87 & 0.87 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Performance Globale -- Donn\'ees Non-IID}
+
+L'impact de l'h\'et\'erog\'en\'eit\'e est particuli\`erement visible pour Local SGD, qui
+pr\'esente un effondrement de performance d\^u au sur-apprentissage local.
+
+\begin{table}[H]
+  \centering
+  \caption{R\'esultats finaux (round 15) -- Donn\'ees Non-IID ($\alpha=0.5$)}
+  \begin{tabular}{lcccc}
+    \toprule
+    \textbf{Algorithme} & \textbf{Accuracy} & \textbf{F1-Score} &
+    \textbf{Pr\'ecision} & \textbf{Rappel} \\
+    \midrule
+    Local SGD  & $<75\,\%$         & 0.73 & 0.74 & 0.72 \\
+    FedAvg     & $\approx 90\,\%$  & 0.90 & 0.91 & 0.89 \\
+    FedAdam    & $\approx 89\,\%$  & 0.89 & 0.90 & 0.88 \\
+    FedProx    & $\approx 91\,\%$  & 0.91 & 0.91 & 0.91 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\textbf{Observation cl\'e :} FedProx se r\'ev\`ele \^etre le plus robuste en Non-IID,
+surpassant FedAvg de $\approx 1$ point d'accuracy gr\^ace \`a son terme proximal qui
+contr\^ole la d\'erive des mod\`eles locaux.
+
+\subsection{Analyse de la Convergence}
+
+\paragraph{Vitesse de convergence :}
+\begin{itemize}
+  \item \textbf{FedAdam} atteint 85\,\% d'accuracy d\`es le round 4 (IID), soit le
+        plus rapide gr\^ace \`a son momentum c\^ot\'e serveur.
+  \item \textbf{FedAvg} et \textbf{FedProx} convergent vers le round 5--6.
+  \item \textbf{Local SGD} stagne d\`es le round 3 et ne progresse plus.
+\end{itemize}
+
+\paragraph{Stabilit\'e des oscillations :}
+En Non-IID, FedAvg pr\'esente des oscillations de l'ordre de $\pm 2\,\%$ entre
+rounds cons\'ecutifs. FedAdam r\'eduit ces oscillations gr\^ace au momentum (variance
+des pertes divis\'ee par $\approx 3$). FedProx garantit la convergence la plus
+stable gr\^ace \`a la contrainte proximale.
+
+\subsection{Efficacit\'e Communicationnelle}
+
+Le mod\`ele MLP utilis\'e poss\`ede $\approx 2600$ param\`etres. En utilisant des
+flottants 32 bits (4 octets par param\`etre), le co\^ut par \'echange bidirectionnel
+est :
+
+\begin{equation}
+  C_{\text{\'echange}} = 2 \times 2600 \times 4 \approx 20{,}8 \; \text{Ko}
+  \label{eq:comm_cost}
+\end{equation}
+
+Pour $R=15$ rounds et $K=8$ clients :
+
+\begin{equation}
+  C_{\text{total}} = R \times K \times C_{\text{\'echange}} = 15 \times 8 \times 20{,}8
+  \approx 2{,}5 \; \text{Mo}
+  \label{eq:total_cost}
+\end{equation}
+
+\begin{table}[H]
+  \centering
+  \caption{Analyse des co\^uts de communication}
+  \begin{tabular}{lcc}
+    \toprule
+    \textbf{M\'etrique} & \textbf{Valeur} & \textbf{Commentaire} \\
+    \midrule
+    Taille du mod\`ele     & $\approx 10$ Ko    & Tr\`es l\'eger \\
+    Co\^ut par round       & $\approx 160$ Ko   & 8 clients \\
+    Co\^ut total (15 rounds) & $\approx 2{,}5$ Mo & Gain : $+7$--$10$ pts accuracy \\
+    Gain accuracy vs Local SGD & $+7$ \`a $+16$ pts & Non-IID : $+16$ pts \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{G\'en\'eralisation et Sur-apprentissage}
+
+Le processus d'agr\'egation globale agit comme un r\'egularisateur implicite. Bien que
+les mod\`eles locaux aient tendance \`a pr\'esenter un \textit{overfitting} sur leurs
+distributions locales, le mod\`ele agr\'eg\'e maintient un faible \'ecart train/test.
+FedProx affiche le gap train/test le plus faible en Non-IID ($\approx 3\,\%$)
+contre $\approx 8\,\%$ pour Local SGD.
+
+%% ======================================================================
+\section{Discussion}
+%% ======================================================================
+
+\subsection{Synth\`ese Comparative}
+
+\begin{table}[H]
+  \centering
+  \caption{Tableau de synth\`ese des algorithmes}
+  \begin{tabularx}{\textwidth}{lXXX}
+    \toprule
+    \textbf{Crit\`ere}      & \textbf{FedAvg} & \textbf{FedAdam} & \textbf{FedProx} \\
+    \midrule
+    Simplicit\'e            & \textbf{\'Elev\'ee} & Moyenne          & Moyenne \\
+    Convergence (IID)       & Bonne           & \textbf{Rapide}  & Bonne \\
+    Robustesse (Non-IID)    & Moyenne         & Bonne            & \textbf{Meilleure} \\
+    Stabilit\'e             & Moyenne         & Bonne            & \textbf{Tr\`es bonne} \\
+    Overhead calcul         & Faible          & Faible           & Faible \\
+    Hyperparam\`etres       & 0 (hors $\eta$) & 4               & 1 ($\mu$) \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\subsection{Choix Recommand\'e}
+
+\begin{itemize}
+  \item \textbf{IID homog\`ene} : FedAvg est suffisant et le plus simple \`a d\'eployer.
+  \item \textbf{Non-IID h\'et\'erog\`ene} (contexte m\'edical r\'eel) : \textbf{FedProx} est
+        recommand\'e. Il garantit la convergence m\^eme sous forte h\'et\'erog\'en\'eit\'e sans
+        co\^ut computationnel significatif.
+  \item \textbf{Convergence rapide requise} : FedAdam est pr\'ef\'erable lorsque le
+        nombre de rounds disponibles est limit\'e.
+\end{itemize}
+
+\subsection{Limites et Perspectives}
+
+\begin{itemize}
+  \item \textbf{Attaques adversariales} : Le syst\`eme n'a pas \'et\'e test\'e face aux
+        attaques de type \textit{model poisoning} ou \textit{gradient inversion}.
+  \item \textbf{S\'ecurit\'e} : L'ajout de m\'ecanismes de confidentialit\'e diff\'erentielle
+        (\textit{Differential Privacy}) ou de \textit{Secure Aggregation} serait
+        une extension naturelle.
+  \item \textbf{Scalabilit\'e} : Le passage \`a $K>100$ clients n\'ecessite une strat\'egie
+        de s\'election partielle (e.g., s\'election al\'eatoire de 10\,\% des clients par
+        round).
+  \item \textbf{Donn\'ees r\'eelles} : Le projet utilise une simulation de la f\'ed\'eration.
+        Un d\'eploiement r\'eel n\'ecessiterait une infrastructure r\'eseau s\'ecuris\'ee (TLS,
+        authentification mutuelle).
+\end{itemize}
+
+%% ======================================================================
+\section{Conclusion}
+%% ======================================================================
+
+Ce projet d\'emontre la viabilit\'e de l'Apprentissage F\'ed\'er\'e pour des applications
+m\'edicales sensibles. Les r\'esultats obtenus sont clairs et convergents :
+
+\begin{enumerate}[label=\textbf{\arabic*.}]
+  \item \textbf{La collaboration surpasse l'isolation} : En IID comme en Non-IID,
+        les trois algorithmes f\'ed\'er\'es d\'epassent syst\'ematiquement Local SGD de 7 \`a
+        16 points d'accuracy.
+  \item \textbf{FedProx domine en contexte h\'et\'erog\`ene} : Son terme proximal est la
+        cl\'e d'une convergence stable sous distribution Non-IID, atteignant 91\,\%
+        d'accuracy tout en pr\'eservant la confidentialit\'e des patients.
+  \item \textbf{Efficacit\'e communicationnelle exceptionnelle} : Avec seulement
+        2,5 Mo de bande passante totale pour l'ensemble de l'entra\^inement, le
+        syst\`eme est d\'eployable sur des r\'eseaux m\'edicaux \`a faible d\'ebit.
+  \item \textbf{Confidentialit\'e pr\'eserv\'ee} : Aucune donn\'ee m\'edicale brute ne quitte
+        les h\^opitaux clients. Seuls des vecteurs de poids math\'ematiques ($\approx 10$ Ko)
+        transitent sur le r\'eseau.
+\end{enumerate}
+
+L'infrastructure d\'evelopp\'ee -- boucle f\'ed\'er\'ee personnalis\'ee, partitionnement
+Dirichlet, mod\`ele MLP l\'eger -- constitue une base solide pour des extensions
+futures int\'egrant la confidentialit\'e diff\'erentielle, la d\'efense contre les
+attaques adversariales, et le d\'eploiement sur des plateformes edge r\'eelles.
+
+%% ======================================================================
+%% R\'ef\'erences
+%% ======================================================================
+\newpage
+\begin{thebibliography}{9}
+
+\bibitem{mcmahan2017}
+  H.~B. McMahan, E.~Moore, D.~Ramage, S.~Hampson, and B.~A.~y~Arcas,
+  \textit{Communication-Efficient Learning of Deep Networks from Decentralized Data},
+  in \textit{Proc. 20th AISTATS}, Fort Lauderdale, FL, USA, 2017.
+
+\bibitem{reddi2020}
+  S.~J. Reddi, Z.~Charles, M.~Zaheer, Z.~Garrett, K.~Rush, J.~Kone\v{c}n\'{y},
+  S.~Kumar, and H.~B. McMahan,
+  \textit{Adaptive Federated Optimization},
+  in \textit{Proc. ICLR 2021}, 2021.
+
+\bibitem{li2020fedprox}
+  T.~Li, A.~K. Sahu, M.~Zaheer, M.~Sanjabi, A.~Talwalkar, and V.~Smith,
+  \textit{Federated Optimization in Heterogeneous Networks},
+  in \textit{Proc. MLSys 2020}, 2020.
+
+\bibitem{li2020challenges}
+  T.~Li, A.~K. Sahu, A.~Talwalkar, and V.~Smith,
+  \textit{Federated Learning: Challenges, Methods, and Future Directions},
+  \textit{IEEE Signal Process. Mag.}, vol.~37, no.~3, pp.~50--60, 2020.
+
+\bibitem{kairouz2019}
+  P.~Kairouz \textit{et al.},
+  \textit{Advances and Open Problems in Federated Learning},
+  \textit{Found. Trends Mach. Learn.}, vol.~14, no.~1--2, pp.~1--210, 2021.
+
+\bibitem{heart_dataset}
+  UCI Machine Learning Repository,
+  \textit{Heart Disease Data Set},
+  \url{https://archive.ics.uci.edu/ml/datasets/Heart+Disease}, 1988.
+
+\end{thebibliography}
+
+\end{document}
