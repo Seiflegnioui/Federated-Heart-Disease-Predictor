@@ -15,12 +15,9 @@
 \usepackage{amsmath,amssymb}
 \usepackage{booktabs}
 \usepackage{graphicx}
-\usepackage{multirow}
-\usepackage{array}
 \usepackage{tikz}
 \usetikzlibrary{positioning, arrows.meta, shapes.geometric, calc}
 \usepackage{xcolor}
-\usepackage{caption}
 \usepackage{pifont}
 
 % ----- Couleurs personnalis\'{e}es (Metropolis) -----
@@ -46,155 +43,77 @@
 
 % ----- Informations du document -----
 \title[FL -- Maladies Cardiaques]{Apprentissage F\'{e}d\'{e}r\'{e} pour la Pr\'{e}diction\\de Maladies Cardiaques}
-\subtitle{Simulation m\'{e}dicale avec donn\'{e}es distribu\'{e}es}
-\author[Legnioui \& Sarraf]{Sifeddine \textsc{Legnioui} \and Youssef \textsc{Sarraf} \\ \small {Module : Optimisation \\ Universit\'{e} --- Ann\'{e}e 2025--2026}}
-\date{20 juin 2026}
+\subtitle{Simulation m\'{e}dicale distribu\'{e}e sans \'{e}change de donn\'{e}es}
+\author[Legnioui \& Sarraf]{Sifeddine \textsc{Legnioui} \and Youssef \textsc{Sarraf} \\ \small {Module : Optimisation --- Universit\'{e} (2025--2026)}}
+\date{}
 
-% ----- Num\'{e}rotation -----
 \setbeamertemplate{navigation symbols}{}
 
 \begin{document}
 
-% ============================================================================
-% SLIDE 1 : Page de titre
-% ============================================================================
 \begin{frame}[plain]
   \titlepage
 \end{frame}
 
-% ============================================================================
-% SLIDE 2 : Plan / Sommaire
-% ============================================================================
-\begin{frame}{Plan de la Pr\'{e}sentation}
-  \tableofcontents
+\begin{frame}{Plan de la pr\'{e}sentation}
+  \tableofcontents[hideallsubsections]
 \end{frame}
 
 % ============================================================================
-%  SECTION 1 : INTRODUCTION
+\section{Contexte \& Objectifs}
 % ============================================================================
-\section{Introduction}
 
-% ============================================================================
-% SLIDE 3 : Contexte
-% ============================================================================
-\begin{frame}{Introduction --- Contexte}
+\begin{frame}{Le dilemme des donn\'{e}es m\'{e}dicales}
   \begin{columns}[T]
-    \begin{column}{0.55\textwidth}
-      \begin{block}{Le Big Data en sant\'{e}}
+    \begin{column}{0.5\textwidth}
+      \begin{block}{Le probl\`{e}me de la centralisation}
         \begin{itemize}
-          \item Explosion des donn\'{e}es m\'{e}dicales : dossiers \'{e}lectroniques, imagerie, capteurs connect\'{e}s
-          \item L'IA offre un potentiel \'{e}norme pour le \textbf{diagnostic assist\'{e}} et la \textbf{m\'{e}decine pr\'{e}dictive}
-          \item Les maladies cardiovasculaires restent la \textbf{1\`{e}re cause de mortalit\'{e}} mondiale (OMS, 2024)
+          \item Les mod\`{e}les d'IA n\'{e}cessitent beaucoup de donn\'{e}es pour \^{e}tre performants.
+          \item Les donn\'{e}es m\'{e}dicales sont sensibles, isol\'{e}es dans des h\^{o}pitaux diff\'{e}rents (silos).
+          \item Le transfert de ces donn\'{e}es est bloqu\'{e} par la r\'{e}glementation (RGPD).
         \end{itemize}
       \end{block}
     \end{column}
-    \begin{column}{0.42\textwidth}
-      \begin{alertblock}{Probl\`{e}me de confidentialit\'{e}}
-        \begin{itemize}
-          \item R\'{e}glementations strictes (RGPD, HIPAA)
-          \item Donn\'{e}es sensibles : impossible de les centraliser
-          \item Silos de donn\'{e}es entre h\^{o}pitaux
-        \end{itemize}
-      \end{alertblock}
-    \end{column}
-  \end{columns}
-  \vfill
-  \centering
-  \textcolor{accentblue}{\textbf{$\Rightarrow$ Comment entra\^{i}ner un mod\`{e}le performant sans partager les donn\'{e}es~?}}
-\end{frame}
-
-% ============================================================================
-% SLIDE 4 : Probl\'{e}matique
-% ============================================================================
-\begin{frame}{Introduction --- Probl\'{e}matique}
-  \begin{block}{Limites de l'apprentissage centralis\'{e}}
-    \begin{enumerate}
-      \item \textbf{Vie priv\'{e}e} --- Les patients ne consentent pas au transfert de leurs dossiers m\'{e}dicaux vers un serveur central
-      \item \textbf{R\'{e}glementation} --- Les lois imposent la localisation des donn\'{e}es au sein de l'\'{e}tablissement
-      \item \textbf{Volume} --- Le transfert de larges volumes de donn\'{e}es m\'{e}dicales est co\^{u}teux et lent
-      \item \textbf{H\'{e}t\'{e}rog\'{e}n\'{e}it\'{e}} --- Chaque h\^{o}pital a une population diff\'{e}rente (biais d\'{e}mographique, protocoles)
-    \end{enumerate}
-  \end{block}
-  \vfill
-  \begin{exampleblock}{Cons\'{e}quence directe}
-    Les donn\'{e}es restent \textbf{fragment\'{e}es} en silos isol\'{e}s $\longrightarrow$ les mod\`{e}les locaux souffrent d'un manque de g\'{e}n\'{e}ralisation.
-  \end{exampleblock}
-\end{frame}
-
-% ============================================================================
-% SLIDE 5 : L'Apprentissage F\'{e}d\'{e}r\'{e}
-% ============================================================================
-\begin{frame}{Introduction --- L'Apprentissage F\'{e}d\'{e}r\'{e}}
-  \begin{block}{D\'{e}finition (McMahan \textit{et al.}, 2017)}
-    L'apprentissage f\'{e}d\'{e}r\'{e} (\textit{Federated Learning}) est un paradigme d'entra\^{i}nement collaboratif o\`{u} le \textbf{mod\`{e}le voyage vers les donn\'{e}es}, et non l'inverse.
-  \end{block}
-  \vspace{0.3cm}
-  \begin{columns}[T]
     \begin{column}{0.48\textwidth}
-      \textbf{Principe g\'{e}n\'{e}ral :}
-      \begin{enumerate}
-        \item Le serveur envoie le mod\`{e}le global $w^{(t)}$
-        \item Chaque client $k$ entra\^{i}ne localement
-        \item Les clients renvoient leurs mises \`{a} jour $w_k^{(t+1)}$
-        \item Le serveur agr\`{e}ge les poids
-        \item R\'{e}p\'{e}ter pendant $T$ rounds
-      \end{enumerate}
-    \end{column}
-    \begin{column}{0.48\textwidth}
-      \textbf{Avantages cl\'{e}s :}
-      \begin{itemize}
-        \item[\checkmark] Donn\'{e}es \textbf{jamais} partag\'{e}es
-        \item[\checkmark] Conformit\'{e} r\'{e}glementaire
-        \item[\checkmark] Exploitation de donn\'{e}es distribu\'{e}es
-        \item[\checkmark] R\'{e}duction des co\^{u}ts de transfert
-      \end{itemize}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-% ============================================================================
-% SLIDE 6 : Objectifs du Projet
-% ============================================================================
-\begin{frame}{Objectifs du Projet}
-  \begin{block}{Quatre objectifs principaux}
-    \begin{enumerate}
-      \item \textbf{Simuler un environnement f\'{e}d\'{e}r\'{e}} avec 8 h\^{o}pitaux virtuels sur le dataset Heart Disease UCI
-      \item \textbf{Comparer 4 algorithmes d'optimisation f\'{e}d\'{e}r\'{e}e} : Local SGD, FedAvg, FedAdam et FedProx
-      \item \textbf{Analyser l'impact de l'h\'{e}t\'{e}rog\'{e}n\'{e}it\'{e} des donn\'{e}es} (distribution IID vs. Non-IID via Dirichlet)
-      \item \textbf{\'{E}valuer les compromis} performance / co\^{u}t de communication / divergence locale
-    \end{enumerate}
-  \end{block}
-  \vfill
-  \centering
-  \textcolor{darkblue}{\rule{0.6\textwidth}{0.4pt}}\\[0.3cm]
-  \textit{Option 4 --- Simulation de donn\'{e}es m\'{e}dicales en apprentissage f\'{e}d\'{e}r\'{e}}
-\end{frame}
-
-% ============================================================================
-%  SECTION 2 : M\'{E}THODOLOGIE
-% ============================================================================
-\section{M\'{e}thodologie}
-
-% ============================================================================
-% SLIDE 7 : Architecture F\'{e}d\'{e}r\'{e}e
-% ============================================================================
-\begin{frame}{Architecture F\'{e}d\'{e}r\'{e}e}
-  \begin{columns}[c]
-    \begin{column}{0.52\textwidth}
-      \begin{block}{Topologie \'{e}toile}
-        \begin{itemize}
-          \item \textbf{1 serveur central} : agr\'{e}gation des poids
-          \item \textbf{8 h\^{o}pitaux simul\'{e}s} : entra\^{i}nement local
-          \item Communication : envoi/r\'{e}ception du mod\`{e}le ($\sim$10\,KB par \'{e}change)
-        \end{itemize}
-      \end{block}
-      \vspace{0.2cm}
-      \begin{exampleblock}{Flux de communication}
-        \centering
-        Serveur $\xrightarrow{w^{(t)}}$ Clients $\xrightarrow{w_k^{(t+1)}}$ Serveur
+      \begin{exampleblock}{La solution : L'Apprentissage F\'{e}d\'{e}r\'{e}}
+        Au lieu d'amener les donn\'{e}es au mod\`{e}le (centralisation), on \textbf{am\`{e}ne le mod\`{e}le aux donn\'{e}es}.
+        Seuls les \emph{poids} du mod\`{e}le sont \'{e}chang\'{e}s, garantissant la confidentialit\'{e}.
       \end{exampleblock}
     \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Objectifs du projet (Option 4)}
+  \begin{alertblock}{Cahier des charges respect\'{e}}
+    \begin{enumerate}
+      \item \textbf{Domaine :} Simulation m\'{e}dicale sur donn\'{e}es tabulaires.
+      \item \textbf{R\'{e}seau :} Perceptron Multicouche (MLP).
+      \item \textbf{F\'{e}d\'{e}ration :} Simulation d'au moins 8 clients (h\^{o}pitaux).
+      \item \textbf{Comparaison algorithmique :} \'{E}valuation de 4 algorithmes sp\'{e}cifiques.
+      \item \textbf{H\'{e}t\'{e}rog\'{e}n\'{e}it\'{e} :} \'{E}tude des sc\'{e}narios IID (donn\'{e}es \'{e}quilibr\'{e}es) et Non-IID (donn\'{e}es asym\'{e}triques).
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+% ============================================================================
+\section{Architecture \& M\'{e}thodologie}
+% ============================================================================
+
+\begin{frame}{Architecture de la F\'{e}d\'{e}ration Hospitali\`{e}re}
+  \begin{columns}[c]
     \begin{column}{0.45\textwidth}
+      \begin{itemize}
+        \item \textbf{Topologie en \'{e}toile :} 1 serveur global coordonne 8 h\^{o}pitaux locaux.
+        \item \textbf{Processus (1 Round) :}
+        \begin{enumerate}
+            \item Le serveur envoie le mod\`{e}le aux h\^{o}pitaux.
+            \item Chaque h\^{o}pital l'entra\^{i}ne sur ses propres patients.
+            \item Les h\^{o}pitaux renvoient leurs mises \`{a} jour.
+            \item Le serveur fusionne tout.
+        \end{enumerate}
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
       \begin{figure}
         \centering
         \resizebox{0.9\textwidth}{!}{%
@@ -215,591 +134,116 @@
   \end{columns}
 \end{frame}
 
-% ============================================================================
-% SLIDE 8 : Dataset - Heart Disease
-% ============================================================================
-\begin{frame}{Dataset --- Heart Disease UCI}
+\begin{frame}{Donn\'{e}es et Mod\`{e}le}
   \begin{columns}[T]
-    \begin{column}{0.55\textwidth}
-      \begin{block}{Description du jeu de donn\'{e}es}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Dataset : Heart Disease UCI}
         \begin{itemize}
-          \item \textbf{Source} : UCI Machine Learning Repository
-          \item \textbf{Patients} : 1\,025 enregistrements
-          \item \textbf{Attributs cliniques} : 13 variables
-          \item \textbf{Cible} : Classification binaire (maladie / sain)
+          \item \textbf{Taille :} 1\,025 patients.
+          \item \textbf{Attributs :} 13 indicateurs (âge, pression art\'{e}rielle, cholest\'{e}rol, ECG, etc.).
+          \item \textbf{Cible :} Binaire (Malade / Sain).
+          \item \textbf{Pr\'{e}traitement :} Encodage One-Hot et Standardisation Z-Score (23 features finales).
         \end{itemize}
       \end{block}
-      \vspace{0.2cm}
-      \footnotesize
-      \begin{tabular}{ll}
-        \toprule
-        \textbf{Attribut} & \textbf{Type} \\
-        \midrule
-        \^{A}ge, Pression art\'{e}rielle & Num\'{e}rique \\
-        Cholest\'{e}rol, Fr\'{e}q. cardiaque & Num\'{e}rique \\
-        Sexe, Douleur thoracique & Cat\'{e}goriel \\
-        Glyc\'{e}mie, ECG repos & Cat\'{e}goriel \\
-        Angine d'effort, Pente ST & Cat\'{e}goriel \\
-        \bottomrule
-      \end{tabular}
     \end{column}
-    \begin{column}{0.42\textwidth}
-      \begin{figure}
-        \centering
-        \includegraphics[width=\textwidth]{example-image}
-        \caption{Distribution des classes (maladie vs. sain)}
-      \end{figure}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Mod\`{e}le : MLP L\'{e}ger}
+        \begin{itemize}
+          \item \textbf{Architecture :} Entr\'{e}e(23) $\to$ Couche 1(64) $\to$ Couche 2(32) $\to$ Sortie(1).
+          \item \textbf{Taille :} $\sim$2\,600 param\`{e}tres.
+          \item \textbf{Poids :} Moins de 11 Ko ! Tr\`{e}s facile \`{a} transf\'{e}rer sur le r\'{e}seau.
+        \end{itemize}
+      \end{block}
     \end{column}
   \end{columns}
 \end{frame}
 
-% ============================================================================
-% SLIDE 9 : Pr\'{e}paration des donn\'{e}es
-% ============================================================================
-\begin{frame}{Pr\'{e}paration des Donn\'{e}es}
-  \begin{block}{Pipeline de pr\'{e}traitement}
-    \begin{enumerate}
-      \item \textbf{Encodage One-Hot} des variables cat\'{e}gorielles\\
-            $\text{13 attributs} \longrightarrow \text{23 features num\'{e}riques}$
-      \item \textbf{Normalisation Z-score} (standardisation)
-            \[
-              x'_j = \frac{x_j - \mu_j}{\sigma_j}, \quad \forall\, j \in \{1, \ldots, 23\}
-            \]
-      \item \textbf{D\'{e}coupage} : 80\,\% entra\^{i}nement / 20\,\% test
-    \end{enumerate}
-  \end{block}
-  \vfill
-  \begin{exampleblock}{Dimensions finales}
-    \centering
-    $X \in \mathbb{R}^{1025 \times 23}$, \quad $y \in \{0, 1\}^{1025}$
-  \end{exampleblock}
-\end{frame}
-
-% ============================================================================
-% SLIDE 10 : Partitionnement IID vs Non-IID
-% ============================================================================
-\begin{frame}{Partitionnement IID vs. Non-IID}
-  \begin{columns}[T]
-    \begin{column}{0.52\textwidth}
-      \begin{block}{Distribution IID}
-        \begin{itemize}
-          \item R\'{e}partition \textbf{uniforme} et al\'{e}atoire
-          \item Chaque h\^{o}pital $\approx 128$ patients
-          \item M\^{e}me distribution de classes
-        \end{itemize}
-      \end{block}
-      \vspace{0.2cm}
-      \begin{alertblock}{Distribution Non-IID (Dirichlet)}
-        \begin{itemize}
-          \item Distribution de Dirichlet avec $\alpha = 0.5$
-          \item D\'{e}s\'{e}quilibre inter-h\^{o}pitaux
-          \item Simule la r\'{e}alit\'{e} clinique
-        \end{itemize}
-        \[
-          p_k \sim \text{Dir}(\alpha), \quad \alpha = 0.5
-        \]
-      \end{alertblock}
-    \end{column}
-    \begin{column}{0.45\textwidth}
-      \begin{figure}
-        \centering
-        \includegraphics[width=\textwidth]{example-image}
-        \caption{Comparaison IID vs. Non-IID ($\alpha = 0.5$)}
-      \end{figure}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-% ============================================================================
-% SLIDE 11 : Architecture du Mod\`{e}le MLP
-% ============================================================================
-\begin{frame}{Architecture du Mod\`{e}le --- MLP}
-  \begin{columns}[c]
-    \begin{column}{0.52\textwidth}
-      \begin{block}{Perceptron multicouche (MLP)}
-        \begin{itemize}
-          \item Architecture compacte adapt\'{e}e \`{a} l'apprentissage f\'{e}d\'{e}r\'{e}
-          \item Fonction de perte : \textbf{Binary Cross-Entropy}
-          \item Optimiseur local : \textbf{SGD} ($\eta = 0.01$)
-          \item $\sim$\,\textbf{2\,600 param\`{e}tres} entra\^{i}nables
-        \end{itemize}
-      \end{block}
-    \end{column}
-    \begin{column}{0.45\textwidth}
-      \centering
-      \footnotesize
-      \begin{tabular}{lcc}
-        \toprule
-        \textbf{Couche} & \textbf{Dim.} & \textbf{Activation} \\
-        \midrule
-        Entr\'{e}e   & 23        & ---     \\
-        Dense 1      & $23 \to 64$ & ReLU  \\
-        Dense 2      & $64 \to 32$ & ReLU  \\
-        Sortie       & $32 \to 1$  & Sigmoid \\
-        \midrule
-        \multicolumn{2}{l}{\textbf{Total param.}} & \textbf{$\sim$2\,600} \\
-        \bottomrule
-      \end{tabular}
-      \vspace{0.3cm}
-      \[
-        23 \longrightarrow 64 \longrightarrow 32 \longrightarrow 1
-      \]
-    \end{column}
-  \end{columns}
-\end{frame}
-
-% ============================================================================
-%  SECTION 3 : ALGORITHMES
-% ============================================================================
-\section{Algorithmes d'Optimisation}
-
-% ============================================================================
-% SLIDE 12 : Local SGD
-% ============================================================================
-\begin{frame}{Algorithme 1 --- Local SGD (Baseline)}
-  \begin{block}{Principe}
-    Chaque h\^{o}pital entra\^{i}ne son mod\`{e}le \textbf{ind\'{e}pendamment}, sans aucune communication avec le serveur.
-  \end{block}
+\begin{frame}{La R\'{e}partition des Donn\'{e}es (IID vs Non-IID)}
+  Dans le monde r\'{e}el, un h\^{o}pital cardiologique (A) a beaucoup de patients malades, tandis qu'une clinique g\'{e}n\'{e}rale (B) a surtout des patients sains.
   \vspace{0.3cm}
-  \begin{columns}[T]
-    \begin{column}{0.5\textwidth}
-      \textbf{Mise \`{a} jour locale :}
-      \[
-        w_k^{(t+1)} = w_k^{(t)} - \eta \nabla F_k(w_k^{(t)})
-      \]
-      o\`{u} $F_k$ est la perte locale du client $k$.
-    \end{column}
-    \begin{column}{0.45\textwidth}
-      \begin{alertblock}{Limitations}
-        \begin{itemize}
-          \item Aucune agr\'{e}gation
-          \item Pas de g\'{e}n\'{e}ralisation inter-sites
-          \item Fortement d\'{e}pendant des donn\'{e}es locales
-        \end{itemize}
-      \end{alertblock}
-    \end{column}
-  \end{columns}
-  \vfill
-  \centering
-  \textcolor{accentblue}{\textit{$\Rightarrow$ Sert de r\'{e}f\'{e}rence (baseline) pour \'{e}valuer l'apport de la f\'{e}d\'{e}ration.}}
+  
+  \begin{itemize}
+      \item \textbf{Sc\'{e}nario IID (Id\'{e}al) :} Les donn\'{e}es sont m\'{e}lang\'{e}es et r\'{e}parties al\'{e}atoirement de mani\`{e}re \'{e}gale entre les 8 h\^{o}pitaux.
+      \item \textbf{Sc\'{e}nario Non-IID (R\'{e}aliste) :} R\'{e}partition in\'{e}gale des classes simul\'{e}e via une \emph{distribution de Dirichlet} ($\alpha=0.5$). Certains h\^{o}pitaux se sp\'{e}cialisent involontairement.
+  \end{itemize}
+
+  \begin{alertblock}{Le d\'{e}fi du Non-IID}
+      L'h\'{e}t\'{e}rog\'{e}n\'{e}it\'{e} cr\'{e}e une "d\'{e}rive" (Client Drift) : chaque h\^{o}pital optimise son mod\`{e}le dans une direction diff\'{e}rente. Le serveur doit corriger cela.
+  \end{alertblock}
 \end{frame}
 
 % ============================================================================
-% SLIDE 13 : FedAvg
+\section{Algorithmes & R\'{e}sultats}
 % ============================================================================
-\begin{frame}{Algorithme 2 --- FedAvg}
-  \begin{block}{Federated Averaging (McMahan \textit{et al.}, 2017)}
-    Agr\'{e}gation par \textbf{moyenne pond\'{e}r\'{e}e} des poids locaux, proportionnellement \`{a} la taille du dataset de chaque client.
-  \end{block}
+
+\begin{frame}{Les 4 Algorithmes \'{E}valu\'{e}s}
+  Nous avons impl\'{e}ment\'{e} et compar\'{e} 4 strat\'{e}gies :
   \vspace{0.3cm}
-  \begin{exampleblock}{Formule d'agr\'{e}gation}
-    \[
-      w^{(t+1)} = \sum_{k=1}^{K} \frac{n_k}{n} \, w_k^{(t+1)}
-    \]
-    o\`{u} $n_k = |\mathcal{D}_k|$ est le nombre d'\'{e}chantillons du client $k$, et $n = \sum_{k} n_k$.
-  \end{exampleblock}
+  \begin{enumerate}
+      \item \textbf{Local SGD (Sans collaboration) :} Chaque h\^{o}pital s'entra\^{i}ne seul. Le pire sc\'{e}nario en termes de performances globales.
+      \item \textbf{FedAvg (Le Standard) :} Le serveur fait une simple moyenne pond\'{e}r\'{e}e des param\`{e}tres de tous les h\^{o}pitaux.
+      \item \textbf{FedAdam (L'Adaptatif) :} Le serveur utilise une m\'{e}moire (inertie/momentum) pour lisser les mises \`{a} jour et acc\'{e}l\'{e}rer la convergence.
+      \item \textbf{FedProx (Le R\'{e}gulateur) :} Ajoute une contrainte locale (terme proximal) pour emp\^{e}cher les h\^{o}pitaux de trop s'\'{e}loigner du mod\`{e}le global, excellent pour le Non-IID.
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{R\'{e}sultats : Performance Globale (Accuracy)}
+  \begin{center}
+    \begin{tabular}{lcc}
+      \toprule
+      \textbf{Algorithme} & \textbf{Pr\'{e}cision IID} & \textbf{Pr\'{e}cision Non-IID} \\
+      \midrule
+      \textbf{Local SGD}  & 81.3\% & \textcolor{mRed}{62.1\%} \\
+      \textbf{FedAvg}     & 91.8\% & 91.3\% \\
+      \textbf{FedAdam}    & \textcolor{mLightGreen}{92.4\%} & 90.7\% \\
+      \textbf{FedProx}    & 91.8\% & \textcolor{mLightGreen}{91.7\%} \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  
   \vspace{0.3cm}
   \begin{itemize}
-    \item \textbf{Entra\^{i}nement local} : $E = 5$ \'{e}poques par round
-    \item \textbf{Rounds de communication} : $T = 15$
-    \item \textbf{Clients participants} : $K = 8$ (tous s\'{e}lectionn\'{e}s)
+      \item L'absence de collaboration (\textbf{Local SGD}) est catastrophique sur des donn\'{e}es asym\'{e}triques.
+      \item \textbf{FedAdam} est le plus performant en situation id\'{e}ale (IID).
+      \item \textbf{FedProx} r\'{e}siste le mieux \`{a} l'h\'{e}t\'{e}rog\'{e}n\'{e}it\'{e} (Non-IID) gr\^{a}ce \`{a} sa r\'{e}gularisation.
   \end{itemize}
 \end{frame}
 
-% ============================================================================
-% SLIDE 14 : FedAdam
-% ============================================================================
-\begin{frame}{Algorithme 3 --- FedAdam}
-  \begin{block}{Optimisation adaptative c\^{o}t\'{e} serveur}
-    Le serveur applique l'optimiseur \textbf{Adam} sur le pseudo-gradient agr\'{e}g\'{e}, au lieu d'une simple moyenne.
-  \end{block}
-  \vspace{0.2cm}
-  \begin{exampleblock}{\'{E}quations de mise \`{a} jour}
-    \textbf{Pseudo-gradient :}
-    \[
-      \Delta^{(t)} = \sum_{k=1}^{K} \frac{n_k}{n}\left(w_k^{(t+1)} - w^{(t)}\right)
-    \]
-    \textbf{Moments adaptatifs (serveur) :}
-    \[
-      m^{(t+1)} = \beta_1 \, m^{(t)} + (1 - \beta_1)\, \Delta^{(t)}
-    \]
-    \[
-      v^{(t+1)} = \beta_2 \, v^{(t)} + (1 - \beta_2)\, (\Delta^{(t)})^2
-    \]
-    \[
-      w^{(t+1)} = w^{(t)} + \eta_s \frac{m^{(t+1)}}{\sqrt{v^{(t+1)}} + \epsilon}
-    \]
-  \end{exampleblock}
-\end{frame}
-
-% ============================================================================
-% SLIDE 15 : FedProx
-% ============================================================================
-\begin{frame}{Algorithme 4 --- FedProx}
-  \begin{block}{Terme proximal pour la r\'{e}gularisation (Li \textit{et al.}, 2020)}
-    FedProx ajoute un \textbf{terme de p\'{e}nalit\'{e} proximale} \`{a} la fonction de perte locale pour limiter la \textbf{d\'{e}rive des clients}.
-  \end{block}
-  \vspace{0.3cm}
-  \begin{exampleblock}{Fonction objectif modifi\'{e}e}
-    \[
-      \min_{w_k} \; F_k(w_k) + \frac{\mu}{2} \left\| w_k - w^{(t)} \right\|^2
-    \]
-    avec $\mu = 0.1$ (coefficient proximal).
-  \end{exampleblock}
-  \vspace{0.3cm}
-  \begin{columns}[T]
-    \begin{column}{0.48\textwidth}
-      \textbf{Avantages :}
-      \begin{itemize}
-        \item[\checkmark] Stabilit\'{e} en environnement Non-IID
-        \item[\checkmark] Contr\^{o}le de la divergence locale
-        \item[\checkmark] Simple \`{a} impl\'{e}menter
-      \end{itemize}
-    \end{column}
-    \begin{column}{0.48\textwidth}
-      \textbf{Intuition :}
-      \begin{itemize}
-        \item Le terme $\frac{\mu}{2}\|w_k - w^{(t)}\|^2$ emp\^{e}che le mod\`{e}le local de trop s'\'{e}loigner du mod\`{e}le global
-      \end{itemize}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-% ============================================================================
-%  SECTION 4 : R\'{E}SULTATS
-% ============================================================================
-\section{R\'{e}sultats Exp\'{e}rimentaux}
-
-% ============================================================================
-% SLIDE 16 : Performance IID
-% ============================================================================
-\begin{frame}{R\'{e}sultats --- Performance en IID}
-  \begin{block}{Configuration IID : r\'{e}partition uniforme entre 8 h\^{o}pitaux}
-  \end{block}
-  \vspace{0.2cm}
-  \centering
-  \begin{tabular}{lcccc}
-    \toprule
-    \textbf{Algorithme} & \textbf{Accuracy (\%)} & \textbf{Pr\'{e}cision (\%)} & \textbf{Rappel (\%)} & \textbf{F1-Score (\%)} \\
-    \midrule
-    Local SGD  & 85.4 & 84.2 & 86.1 & 85.1 \\
-    FedAvg     & 90.7 & 90.3 & 91.0 & 90.6 \\
-    FedAdam    & \textbf{91.5} & \textbf{91.8} & 90.9 & \textbf{91.3} \\
-    FedProx    & 91.2 & 91.0 & \textbf{91.4} & 91.2 \\
-    \bottomrule
-  \end{tabular}
-  \vfill
-  \begin{exampleblock}{Observation}
-    En IID, tous les algorithmes f\'{e}d\'{e}r\'{e}s atteignent $>90\%$. \textbf{FedAdam} l\'{e}g\`{e}rement sup\'{e}rieur gr\^{a}ce \`{a} l'optimisation adaptative c\^{o}t\'{e} serveur.
-  \end{exampleblock}
-\end{frame}
-
-% ============================================================================
-% SLIDE 17 : Performance Non-IID
-% ============================================================================
-\begin{frame}{R\'{e}sultats --- Performance en Non-IID}
-  \begin{alertblock}{Configuration Non-IID : Dirichlet $\alpha = 0.5$}
-    L'h\'{e}t\'{e}rog\'{e}n\'{e}it\'{e} des donn\'{e}es met \`{a} l'\'{e}preuve la robustesse des algorithmes.
-  \end{alertblock}
-  \vspace{0.2cm}
-  \centering
-  \begin{tabular}{lcccc}
-    \toprule
-    \textbf{Algorithme} & \textbf{Accuracy (\%)} & \textbf{Pr\'{e}cision (\%)} & \textbf{Rappel (\%)} & \textbf{F1-Score (\%)} \\
-    \midrule
-    Local SGD  & $<75.0$       & 72.3 & 74.8 & 73.5 \\
-    FedAvg     & 87.3          & 86.9 & 87.5 & 87.2 \\
-    FedAdam    & 89.8          & 89.5 & 90.1 & 89.8 \\
-    \rowcolor{lightblue}
-    FedProx    & \textbf{91.1} & \textbf{90.8} & \textbf{91.5} & \textbf{91.1} \\
-    \bottomrule
-  \end{tabular}
-  \vfill
-  \begin{block}{Analyse}
+\begin{frame}{Co\^{u}t de Communication \& Efficacit\'{e}}
+  \begin{block}{Un syst\`{e}me extr\^{e}mement l\'{e}ger}
     \begin{itemize}
-      \item \textbf{FedProx domine} en Non-IID : le terme proximal att\'{e}nue la d\'{e}rive
-      \item \textbf{Local SGD \'{e}choue} ($<75\%$) : sans agr\'{e}gation, les mod\`{e}les divergent
-      \item L'\'{e}cart FedAvg $\leftrightarrow$ FedProx augmente avec l'h\'{e}t\'{e}rog\'{e}n\'{e}it\'{e}
+        \item Notre mod\`{e}le MLP p\`{e}se seulement \textbf{$\sim$10 Ko}.
+        \item Lors d'un round, 8 h\^{o}pitaux re\c{c}oivent et envoient le mod\`{e}le $\to$ $\sim$160 Ko par round au total.
+        \item Pour la totalit\'{e} des 15 rounds d'entra\^{i}nement, le co\^{u}t r\'{e}seau est d'\textbf{environ 2.5 Mo au total}.
     \end{itemize}
   \end{block}
-\end{frame}
-
-% ============================================================================
-% SLIDE 18 : Convergence
-% ============================================================================
-\begin{frame}{R\'{e}sultats --- Courbes de Convergence}
-  \begin{columns}[c]
-    \begin{column}{0.52\textwidth}
-      \begin{figure}
-        \centering
-        \includegraphics[width=\textwidth]{example-image}
-        \caption{Accuracy vs. Rounds de communication (Non-IID)}
-      \end{figure}
-    \end{column}
-    \begin{column}{0.45\textwidth}
-      \begin{block}{Observations cl\'{e}s}
-        \begin{itemize}
-          \item \textbf{FedAdam} : convergence la plus \textbf{rapide} (atteint 85\% en $\sim$4 rounds)
-          \item \textbf{FedProx} : convergence \textbf{stable} et performance finale sup\'{e}rieure
-          \item \textbf{FedAvg} : oscillations en d\'{e}but d'entra\^{i}nement en Non-IID
-          \item \textbf{Local SGD} : plafonne rapidement, pas de progression
-        \end{itemize}
-      \end{block}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-% ============================================================================
-% SLIDE 19 : Divergence Locale
-% ============================================================================
-\begin{frame}{R\'{e}sultats --- Divergence Locale}
-  \begin{columns}[c]
-    \begin{column}{0.5\textwidth}
-      \begin{figure}
-        \centering
-        \includegraphics[width=\textwidth]{example-image}
-        \caption{Norme L2 de la divergence locale par round}
-      \end{figure}
-    \end{column}
-    \begin{column}{0.47\textwidth}
-      \begin{block}{Mesure de divergence}
-        \[
-          D_k^{(t)} = \left\| w_k^{(t)} - w^{(t)} \right\|_2
-        \]
-        Moyenne sur les $K$ clients :
-        \[
-          \bar{D}^{(t)} = \frac{1}{K}\sum_{k=1}^{K} D_k^{(t)}
-        \]
-      \end{block}
-      \vspace{0.2cm}
-      \begin{alertblock}{R\'{e}sultats}
-        \begin{itemize}
-          \item FedProx : divergence \textbf{la plus faible}
-          \item FedAvg : divergence mod\'{e}r\'{e}e
-          \item Local SGD : divergence \textbf{croissante} (pas de correction)
-        \end{itemize}
-      \end{alertblock}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-% ============================================================================
-% SLIDE 20 : Vitesse de Convergence
-% ============================================================================
-\begin{frame}{R\'{e}sultats --- Vitesse de Convergence}
-  \begin{block}{Nombre de rounds n\'{e}cessaires pour atteindre un seuil d'accuracy}
-  \end{block}
+  
   \vspace{0.2cm}
-  \centering
-  \begin{tabular}{lccc}
-    \toprule
-    \textbf{Algorithme} & \textbf{80\%} & \textbf{85\%} & \textbf{90\%} \\
-    \midrule
-    Local SGD  & ---         & ---         & ---         \\
-    FedAvg     & Round 3     & Round 6     & Round 12    \\
-    FedAdam    & \textbf{Round 2} & \textbf{Round 4} & Round 9     \\
-    FedProx    & Round 3     & Round 5     & \textbf{Round 8} \\
-    \bottomrule
-  \end{tabular}
-  \vfill
-  \begin{columns}[T]
-    \begin{column}{0.48\textwidth}
-      \begin{exampleblock}{FedAdam}
-        Convergence la plus rapide aux seuils bas gr\^{a}ce aux moments adaptatifs.
-      \end{exampleblock}
-    \end{column}
-    \begin{column}{0.48\textwidth}
-      \begin{exampleblock}{FedProx}
-        Atteint 90\% le plus rapidement gr\^{a}ce \`{a} la stabilit\'{e} du terme proximal.
-      \end{exampleblock}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-% ============================================================================
-% SLIDE 21 : Co\^{u}t de Communication
-% ============================================================================
-\begin{frame}{R\'{e}sultats --- Co\^{u}t de Communication}
-  \begin{block}{Calcul du co\^{u}t total de communication}
-    \[
-      C_{\text{total}} = 2 \times K \times T \times S_{\text{mod\`{e}le}}
-    \]
-    o\`{u} le facteur $2$ correspond \`{a} l'envoi (serveur $\to$ client) et au retour (client $\to$ serveur).
-  \end{block}
-  \vspace{0.2cm}
-  \centering
-  \begin{tabular}{ll}
-    \toprule
-    \textbf{Param\`{e}tre} & \textbf{Valeur} \\
-    \midrule
-    Taille du mod\`{e}le ($S_{\text{mod\`{e}le}}$) & $\sim$10\,KB (2\,600 param. $\times$ 4 octets) \\
-    Clients ($K$) & 8 \\
-    Rounds ($T$) & 15 \\
-    \midrule
-    \textbf{Co\^{u}t total} & $2 \times 8 \times 15 \times 10 = $ \textbf{2\,400\,KB $\approx$ 2.5\,MB} \\
-    \bottomrule
-  \end{tabular}
-  \vfill
-  \begin{exampleblock}{Ratio performance / communication}
-    \centering
-    FedProx atteint $\sim$91\% d'accuracy pour seulement \textbf{2.5\,MB} de communication totale.\\
-    $\Rightarrow$ Extr\^{e}mement efficient gr\^{a}ce \`{a} la compacit\'{e} du MLP.
+  \begin{exampleblock}{Conclusion Pratique}
+      Un tel syst\`{e}me peut \^{e}tre d\'{e}ploy\'{e} imm\'{e}diatement m\^{e}me sur des connexions hospitali\`{e}res tr\`{e}s lentes, garantissant un apprentissage rapide et peu co\^{u}teux sans bouger la moindre donn\'{e}e patient.
   \end{exampleblock}
 \end{frame}
 
-% ============================================================================
-% SLIDE 22 : G\'{e}n\'{e}ralisation
-% ============================================================================
-\begin{frame}{R\'{e}sultats --- G\'{e}n\'{e}ralisation}
-  \begin{block}{Analyse de l'\'{e}cart Train / Test (Non-IID)}
-  \end{block}
-  \vspace{0.2cm}
-  \centering
-  \begin{tabular}{lccc}
-    \toprule
-    \textbf{Algorithme} & \textbf{Acc. Train (\%)} & \textbf{Acc. Test (\%)} & \textbf{$\Delta$ (\%)} \\
-    \midrule
-    Local SGD  & 82.5 & 73.8 & 8.7 \\
-    FedAvg     & 91.2 & 87.3 & 3.9 \\
-    FedAdam    & 93.1 & 89.8 & 3.3 \\
-    FedProx    & 92.5 & 91.1 & \textbf{1.4} \\
-    \bottomrule
-  \end{tabular}
-  \vfill
-  \begin{columns}[T]
-    \begin{column}{0.48\textwidth}
-      \begin{alertblock}{Surapprentissage}
-        \begin{itemize}
-          \item Local SGD : $\Delta = 8.7\%$ $\Rightarrow$ surapprentissage significatif
-          \item FedAdam : l\'{e}ger surapprentissage malgr\'{e} de bonnes performances
-        \end{itemize}
-      \end{alertblock}
-    \end{column}
-    \begin{column}{0.48\textwidth}
-      \begin{exampleblock}{Bonne g\'{e}n\'{e}ralisation}
-        \begin{itemize}
-          \item FedProx : $\Delta = 1.4\%$ seulement
-          \item Le terme proximal agit comme un \textbf{r\'{e}gularisateur} implicite
-        \end{itemize}
-      \end{exampleblock}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-% ============================================================================
-%  SECTION 5 : SYNTH\`{E}SE
-% ============================================================================
-\section{Synth\`{e}se et Discussion}
-
-% ============================================================================
-% SLIDE 23 : Synth\`{e}se Comparative
-% ============================================================================
-\begin{frame}{Synth\`{e}se Comparative}
-  \centering
-  \footnotesize
-  \begin{tabular}{lcccccc}
-    \toprule
-    \textbf{Crit\`{e}re} & \textbf{Local SGD} & \textbf{FedAvg} & \textbf{FedAdam} & \textbf{FedProx} \\
-    \midrule
-    Acc. IID (\%)               & 85.4           & 90.7           & \textbf{91.5}  & 91.2           \\
-    Acc. Non-IID (\%)           & $<$75.0        & 87.3           & 89.8           & \textbf{91.1}  \\
-    F1 Non-IID (\%)             & 73.5           & 87.2           & 89.8           & \textbf{91.1}  \\
-    Vitesse convergence         & ---            & Mod\'{e}r\'{e}e & \textbf{Rapide} & Stable         \\
-    Divergence locale           & \'{E}lev\'{e}e & Mod\'{e}r\'{e}e & Mod\'{e}r\'{e}e & \textbf{Faible} \\
-    G\'{e}n\'{e}ralisation ($\Delta$)          & 8.7\%          & 3.9\%          & 3.3\%          & \textbf{1.4\%} \\
-    Robustesse Non-IID          & Tr\`{e}s faible & Moyenne        & Bonne          & \textbf{Excellente} \\
-    Communication               & Aucune         & 2.5\,MB        & 2.5\,MB        & 2.5\,MB        \\
-    \bottomrule
-  \end{tabular}
-  \vfill
-  \begin{block}{Verdict}
-    \begin{itemize}
-      \item \textbf{FedProx} : meilleur choix global pour les sc\'{e}narios h\'{e}t\'{e}rog\`{e}nes (cliniques r\'{e}elles)
-      \item \textbf{FedAdam} : recommand\'{e} quand la vitesse de convergence est prioritaire
-      \item \textbf{FedAvg} : bon compromis simplicit\'{e} / performance en IID
-    \end{itemize}
-  \end{block}
-\end{frame}
-
-% ============================================================================
-%  SECTION 6 : LIMITES ET PERSPECTIVES
-% ============================================================================
-\section{Limites et Perspectives}
-
-% ============================================================================
-% SLIDE 24 : Limites et Perspectives
-% ============================================================================
-\begin{frame}{Limites et Perspectives}
-  \begin{columns}[T]
-    \begin{column}{0.48\textwidth}
-      \begin{alertblock}{Limites identifi\'{e}es}
-        \begin{enumerate}
-          \item \textbf{S\'{e}curit\'{e}} : pas de protection contre les attaques d'inf\'{e}rence ou d'empoisonnement
-          \item \textbf{Scalabilit\'{e}} : simulation limit\'{e}e \`{a} 8 clients et un petit dataset
-          \item \textbf{Mod\`{e}le simple} : MLP compact, non repr\'{e}sentatif de cas complexes
-          \item \textbf{Donn\'{e}es tabulaires uniquement} : pas d'imagerie m\'{e}dicale
-        \end{enumerate}
-      \end{alertblock}
-    \end{column}
-    \begin{column}{0.48\textwidth}
-      \begin{exampleblock}{Perspectives d'am\'{e}lioration}
-        \begin{enumerate}
-          \item \textbf{Confidentialit\'{e} diff\'{e}rentielle} : int\'{e}grer du bruit calibr\'{e} ($\epsilon$-DP)
-          \item \textbf{Agr\'{e}gation s\'{e}curis\'{e}e} : protocoles de calcul multipartite
-          \item \textbf{Passage \`{a} l'\'{e}chelle} : 50+ clients, datasets plus grands
-          \item \textbf{D\'{e}ploiement r\'{e}el} : int\'{e}gration avec des syst\`{e}mes hospitaliers (HL7/FHIR)
-          \item \textbf{Architectures avanc\'{e}es} : CNNs pour l'imagerie, Transformers
-        \end{enumerate}
-      \end{exampleblock}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-% ============================================================================
-%  SECTION 7 : CONCLUSION
 % ============================================================================
 \section{Conclusion}
+% ============================================================================
 
-% ============================================================================
-% SLIDE 25 : Conclusion
-% ============================================================================
 \begin{frame}{Conclusion}
-  \begin{block}{Quatre enseignements cl\'{e}s}
-    \begin{enumerate}
-      \item \textbf{L'apprentissage f\'{e}d\'{e}r\'{e} est viable} pour la pr\'{e}diction de maladies cardiaques, m\^{e}me avec un mod\`{e}le compact ($\sim$2\,600 param\`{e}tres) et un co\^{u}t de communication minimal ($\sim$2.5\,MB)
-
-      \item \textbf{L'h\'{e}t\'{e}rog\'{e}n\'{e}it\'{e} des donn\'{e}es est le d\'{e}fi majeur} : en Non-IID, les performances chutent drastiquement sans m\'{e}canisme de r\'{e}gularisation
-
-      \item \textbf{FedProx est le plus robuste} face aux donn\'{e}es h\'{e}t\'{e}rog\`{e}nes ($\sim$91\% en Non-IID), gr\^{a}ce au terme proximal qui contr\^{o}le la divergence des clients
-
-      \item \textbf{FedAdam acc\'{e}l\`{e}re la convergence} gr\^{a}ce \`{a} l'optimisation adaptative c\^{o}t\'{e} serveur, offrant le meilleur compromis vitesse/performance en IID
-    \end{enumerate}
-  \end{block}
-  \vfill
-  \centering
-  \textcolor{darkblue}{\rule{0.5\textwidth}{0.4pt}}\\[0.3cm]
-  \textit{L'apprentissage f\'{e}d\'{e}r\'{e} ouvre la voie \`{a} une IA m\'{e}dicale\\respectueuse de la vie priv\'{e}e des patients.}
+  \begin{itemize}
+    \item \textbf{Validation de l'Apprentissage F\'{e}d\'{e}r\'{e} :} Nous avons prouv\'{e} qu'une collaboration entre h\^{o}pitaux, sans jamais centraliser les donn\'{e}es, permet d'atteindre plus de 91\% de pr\'{e}cision sur la d\'{e}tection de maladies cardiaques.
+    \item \textbf{Choix Algorithmique :} 
+    \begin{itemize}
+        \item \emph{FedAvg} est un excellent standard par d\'{e}faut.
+        \item \emph{FedProx} doit \^{e}tre privil\'{e}gi\'{e} lorsque les h\^{o}pitaux ont des profils de patients tr\`{e}s diff\'{e}rents (Non-IID).
+    \end{itemize}
+    \item \textbf{Perspectives :} Ajouter du chiffrement homomorphe pour emp\^{e}cher l'analyse des poids (Gradient Inversion Attacks) et l'\'{e}tendre \`{a} des donn\'{e}es d'imagerie m\'{e}dicale (CNN).
+  \end{itemize}
 \end{frame}
 
-% ============================================================================
-% SLIDE 26 : Merci / Questions
-% ============================================================================
-\begin{frame}[plain]
-  \vfill
-  \centering
-  {\Huge\textcolor{darkblue}{\textbf{Merci de votre attention}}}
-  \vspace{1cm}
-
-  {\Large\textcolor{accentblue}{Questions~?}}
-
-  \vspace{1.5cm}
-
-  \textbf{Sifeddine \textsc{Legnioui}} \& \textbf{Youssef \textsc{Sarraf}}\\[0.3cm]
-  Module : Optimisation --- Ann\'{e}e 2025--2026\\[0.5cm]
-
-  \textcolor{darkblue}{\rule{0.4\textwidth}{0.4pt}}\\[0.3cm]
-  {\footnotesize Apprentissage F\'{e}d\'{e}r\'{e} pour la Pr\'{e}diction de Maladies Cardiaques}
-  \vfill
+\begin{frame}[standout]
+  Merci de votre attention ! \\
+  \vspace{0.5cm}
+  Avez-vous des questions ?
 \end{frame}
 
 \end{document}
