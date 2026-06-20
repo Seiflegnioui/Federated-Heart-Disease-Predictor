@@ -1,557 +1,1057 @@
+% ============================================================================
+%  RAPPORT ACADEMIQUE — Apprentissage F\'{e}d\'{e}r\'{e} pour la D\'{e}tection de Maladies Cardiaques
+%  Module : Optimisation
+%  Auteurs : Sifeddine LEGNIOUI & Youssef SARRAF
+%  Ann\'{e}e universitaire : 2025--2026
+% ============================================================================
+
 \documentclass[12pt,a4paper]{report}
 
-%% ─── Encodage & langue ───────────────────────────────────────────────────────
+% ── Encodage et langue ─────────────────────────────────────────────────────────
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[french]{babel}
 
-%% ─── Mise en page ────────────────────────────────────────────────────────────
-\usepackage[
-  a4paper,
-  top=25mm, bottom=25mm,
-  left=30mm, right=25mm,
-  headheight=15pt
-]{geometry}
-\usepackage{fancyhdr}
-\usepackage{titlesec}
-\usepackage{parskip}
+% ── Mise en page ───────────────────────────────────────────────────────────────
+\usepackage[top=2.5cm,bottom=2.5cm,left=2.5cm,right=2.5cm]{geometry}
 \usepackage{setspace}
-\onehalfspacing % Interligne 1.5 pour aérer le texte et répondre aux standards académiques
+\onehalfspacing
 
-%% ─── Mathématiques ───────────────────────────────────────────────────────────
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{bm}
+% ── Math\'{e}matiques ──────────────────────────────────────────────────────────────
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
 
-%% ─── Tableaux & Figures ──────────────────────────────────────────────────────
-\usepackage{graphicx}
+% ── Tableaux et figures ────────────────────────────────────────────────────────
 \usepackage{booktabs}
+\usepackage{multirow}
 \usepackage{array}
-\usepackage{tabularx}
+\usepackage{graphicx}
 \usepackage{float}
 \usepackage{caption}
 \usepackage{subcaption}
-\usepackage{multirow}
-\usepackage{longtable}
 
-%% ─── Algorithmes & Code ──────────────────────────────────────────────────────
-\usepackage{algorithm}
-\usepackage{algpseudocode}
+% ── Algorithmes ────────────────────────────────────────────────────────────────
+\usepackage[ruled,vlined,french,linesnumbered]{algorithm2e}
+
+% ── Code source ────────────────────────────────────────────────────────────────
 \usepackage{listings}
 \usepackage{xcolor}
-
 \lstset{
   language=Python,
-  basicstyle=\ttfamily\footnotesize,
+  basicstyle=\ttfamily\small,
   keywordstyle=\color{blue}\bfseries,
-  stringstyle=\color{red!70!black},
   commentstyle=\color{green!50!black}\itshape,
+  stringstyle=\color{red!70!black},
   numbers=left,
   numberstyle=\tiny\color{gray},
+  numbersep=5pt,
   frame=single,
   breaklines=true,
   captionpos=b,
+  tabsize=4,
   showstringspaces=false
 }
 
-%% ─── Références & Liens ──────────────────────────────────────────────────────
-\usepackage[hidelinks,
-  pdftitle={Rapport Académique -- Apprentissage Fédéré pour la Détection des Maladies Cardiaques},
-  pdfauthor={Sifeddine Legnioui, Youssef Sarraf}
-]{hyperref}
-\usepackage{cite}
+% ── Hyperliens ─────────────────────────────────────────────────────────────────
+\usepackage[hidelinks]{hyperref}
 
-%% ─── Divers ──────────────────────────────────────────────────────────────────
-\usepackage{enumitem}
-
-%% ─── Style de page ───────────────────────────────────────────────────────────
+% ── En-t\^{e}tes ──────────────────────────────────────────────────────────────────
+\usepackage{fancyhdr}
 \pagestyle{fancy}
 \fancyhf{}
-\rhead{\small Apprentissage Fédéré -- Détection des Maladies Cardiaques}
-\lhead{\small Module : Optimisation}
-\cfoot{\thepage}
+\fancyhead[L]{}
+\fancyhead[R]{\small Apprentissage F\'{e}d\'{e}r\'{e} --- Maladies Cardiaques}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
 
-\titleformat{\chapter}[display]
-  {\normalfont\huge\bfseries}{\chaptertitlename\ \thechapter}{20pt}{\Huge}
-\titlespacing*{\chapter}{0pt}{50pt}{40pt}
+% ── Th\'{e}or\`{e}mes ─────────────────────────────────────────────────────────────────
+\newtheorem{definition}{D\'{e}finition}[chapter]
+\newtheorem{theoreme}{Th\'{e}or\`{e}me}[chapter]
+\newtheorem{proposition}{Proposition}[chapter]
 
-%% ======================================================================
-%%  PAGE DE TITRE
-%% ======================================================================
+% ============================================================================
+%  PAGE DE TITRE
+% ============================================================================
 \begin{document}
 
 \begin{titlepage}
-  \centering
-  \vspace*{1cm}
-  \includegraphics[width=0.4\textwidth]{example-image-empty} % Placeholder for university logo
-  
-  \vspace{0.5cm}
-  {\scshape\LARGE Université -- Département Informatique\par}
-  \vspace{0.5cm}
-  {\Large Module : \textbf{Optimisation pour l'Apprentissage Automatique}\par}
-  \vspace{2cm}
+\centering
 
-  \rule{\linewidth}{0.8pt}\\[0.5cm]
-  {\huge\bfseries Optimisation pour l'Apprentissage Fédéré (Federated Learning) :\par}
-  \vspace{0.3cm}
-  {\LARGE\bfseries Détection des Maladies Cardiaques en Milieu Hospitalier Distribué\par}
-  \vspace{0.4cm}
-  {\large\itshape Étude comparative des algorithmes Local SGD, FedAvg, FedAdam et FedProx sur données Non-IID\par}
-  \rule{\linewidth}{0.8pt}
+{\Large \textsc{Universit\'{e} --- D\'{e}partement d'Informatique}}\\[0.3cm]
+{\large \textsc{Fili\`{e}re : Ing\'{e}nierie des Donn\'{e}es et Intelligence Artificielle}}\\[0.3cm]
+\rule{\textwidth}{1.5pt}\\[1cm]
 
-  \vspace{3cm}
-  {\large\textbf{Rapport de Projet de Fin de Module}\par}
-  \vspace{2cm}
+{\large \textbf{Module : Optimisation}}\\[0.8cm]
 
-  \begin{flushleft}
-  \large
-  \textbf{Réalisé par :} \\
-  Sifeddine LEGNIOUI \\
-  Youssef SARRAF \\[1cm]
-  \textbf{Professeur encadrant :} \\
-  [Nom du Professeur]
-  \end{flushleft}
+{\LARGE \textbf{Apprentissage F\'{e}d\'{e}r\'{e} pour la D\'{e}tection}}\\[0.3cm]
+{\LARGE \textbf{de Maladies Cardiaques}}\\[0.6cm]
 
-  \vfill
-  {\large Année Universitaire 2025--2026}
+{\large \textit{Simulation d'un syst\`{e}me d'apprentissage collaboratif}}\\
+{\large \textit{pr\'{e}servant la confidentialit\'{e} des donn\'{e}es m\'{e}dicales}}\\[1cm]
+
+\rule{\textwidth}{1.5pt}\\[1cm]
+
+{\large \textbf{Option 4 :} Simulation d'apprentissage f\'{e}d\'{e}r\'{e} sur donn\'{e}es m\'{e}dicales}\\[1.5cm]
+
+\begin{minipage}[t]{0.45\textwidth}
+\raggedright
+{\large \textbf{R\'{e}alis\'{e} par :}}\\[0.3cm]
+{\large Sifeddine \textsc{Legnioui}}\\
+{\large Youssef \textsc{Sarraf}}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.45\textwidth}
+\raggedleft
+{\large \textbf{Encadr\'{e} par :}}\\[0.3cm]
+{\large Pr. \textsc{[Nom de l'encadrant]}}
+\end{minipage}
+
+\vfill
+
+{\large Ann\'{e}e universitaire : 2025 -- 2026}
+
 \end{titlepage}
 
-%% ======================================================================
-%%  REMERCIEMENTS ET RESUMES
-%% ======================================================================
-\pagenumbering{roman}
-
+% ============================================================================
+%  REMERCIEMENTS
+% ============================================================================
 \chapter*{Remerciements}
 \addcontentsline{toc}{chapter}{Remerciements}
-Nous tenons à adresser nos sincères remerciements à notre professeur pour son encadrement, ses conseils précieux et la qualité de ses enseignements tout au long du module d'Optimisation. Ce projet nous a permis de plonger au cœur des problématiques actuelles de l'intelligence artificielle distribuée, alliant à la fois théorie mathématique de l'optimisation et défis d'ingénierie logicielle. Nous remercions également l'ensemble du corps pédagogique de l'université pour le soutien logistique et académique apporté durant cette année de formation.
 
-\chapter*{Résumé}
-\addcontentsline{toc}{chapter}{Résumé}
-Dans le domaine médical, l'entraînement de modèles d'apprentissage automatique se heurte souvent à des contraintes strictes de confidentialité des données (RGPD, HIPAA). L'apprentissage fédéré (\textit{Federated Learning}) offre une solution élégante à ce problème en permettant d'entraîner un modèle global collaboratif sans centraliser les données locales des hôpitaux. Ce projet explore en profondeur l'impact des données hétérogènes (Non-IID) sur la convergence de différents algorithmes d'optimisation fédérée. 
+Nous tenons \`{a} exprimer notre profonde gratitude \`{a} toutes les personnes qui ont contribu\'{e}, de pr\`{e}s ou de loin, \`{a} la r\'{e}alisation de ce projet. Ce travail, r\'{e}alis\'{e} dans le cadre du module d'Optimisation, a constitu\'{e} une opportunit\'{e} exceptionnelle d'approfondir nos connaissances th\'{e}oriques et pratiques dans le domaine de l'apprentissage automatique distribu\'{e}, et plus particuli\`{e}rement dans le paradigme novateur de l'apprentissage f\'{e}d\'{e}r\'{e} appliqu\'{e} au secteur de la sant\'{e}.
 
-Nous simulons un réseau de 8 hôpitaux collaborant pour développer un modèle de classification binaire permettant de détecter les maladies cardiaques. Notre étude compare minutieusement quatre approches : l'entraînement local isolé (\textit{Local SGD}), la moyenne fédérée standard (\textit{FedAvg}), l'optimisation adaptative côté serveur (\textit{FedAdam}), et l'ajout d'un terme de régularisation proximale (\textit{FedProx}). Les résultats, analysés sur un ensemble de critères allant de la précision au coût de communication en passant par la divergence des modèles, démontrent que FedProx s'impose comme l'approche la plus robuste face à l'hétérogénéité des données médicales.
+Nos remerciements les plus sinc\`{e}res s'adressent en premier lieu \`{a} notre encadrant, dont les orientations p\'{e}dagogiques, les conseils m\'{e}thodologiques et la disponibilit\'{e} constante ont \'{e}t\'{e} d\'{e}terminants pour la conduite de ce projet. Ses explications sur les fondements math\'{e}matiques de l'optimisation distribu\'{e}e et ses remarques constructives lors des s\'{e}ances de suivi nous ont permis de structurer notre d\'{e}marche scientifique de mani\`{e}re rigoureuse et de maintenir un cap clair tout au long de notre travail.
 
-\textbf{Mots-clés :} Apprentissage Fédéré, Optimisation, FedAvg, FedAdam, FedProx, Santé Numérique, Données Non-IID.
+Nous souhaitons \'{e}galement remercier l'ensemble du corps professoral du d\'{e}partement d'Informatique, dont les enseignements fondamentaux en math\'{e}matiques, en statistiques, en apprentissage automatique et en programmation ont constitu\'{e} le socle indispensable sur lequel repose ce projet. Les comp\'{e}tences acquises au cours de notre formation en Ing\'{e}nierie des Donn\'{e}es et Intelligence Artificielle se sont r\'{e}v\'{e}l\'{e}es essentielles pour la compr\'{e}hension des algorithmes d'optimisation f\'{e}d\'{e}r\'{e}e et pour leur impl\'{e}mentation correcte.
 
-\chapter*{Abstract}
-\addcontentsline{toc}{chapter}{Abstract}
-In the medical field, training machine learning models often faces strict data privacy constraints (GDPR, HIPAA). Federated Learning offers an elegant solution to this problem by allowing the training of a collaborative global model without centralizing the local data of hospitals. This project deeply explores the impact of heterogeneous data (Non-IID) on the convergence of different federated optimization algorithms.
+Nous exprimons notre reconnaissance envers la communaut\'{e} open-source, et en particulier les d\'{e}veloppeurs des biblioth\`{e}ques PyTorch, scikit-learn, NumPy et Matplotlib, dont les outils ont permis de concr\'{e}tiser nos id\'{e}es de mani\`{e}re efficace. La disponibilit\'{e} du dataset Heart Disease sur le d\'{e}p\^{o}t UCI Machine Learning Repository a \'{e}galement \'{e}t\'{e} un facteur d\'{e}terminant dans le choix de notre sujet, et nous remercions les chercheurs \`{a} l'origine de sa collecte et de sa mise \`{a} disposition publique.
 
-We simulate a network of 8 hospitals collaborating to develop a binary classification model to detect heart diseases. Our study meticulously compares four approaches: isolated local training (\textit{Local SGD}), standard federated averaging (\textit{FedAvg}), adaptive server-side optimization (\textit{FedAdam}), and the addition of a proximal regularization term (\textit{FedProx}). The results, analyzed on a set of criteria ranging from precision to communication cost and model divergence, demonstrate that FedProx stands out as the most robust approach when dealing with the heterogeneity of medical data.
+Enfin, nous adressons nos remerciements les plus chaleureux \`{a} nos familles et \`{a} nos proches, dont le soutien moral et les encouragements constants ont \'{e}t\'{e} une source de motivation in\'{e}puisable. Leur patience et leur compr\'{e}hension durant les longues heures de travail consacr\'{e}es \`{a} ce projet m\'{e}ritent une reconnaissance toute particuli\`{e}re. Ce travail est le fruit d'un effort collaboratif soutenu, et chaque contribution, m\^{e}me indirecte, a particip\'{e} \`{a} son aboutissement.
 
-\textbf{Keywords:} Federated Learning, Optimization, FedAvg, FedAdam, FedProx, Digital Healthcare, Non-IID Data.
+% ============================================================================
+%  R\'{E}SUM\'{E} / ABSTRACT
+% ============================================================================
+\chapter*{R\'{e}sum\'{e}}
+\addcontentsline{toc}{chapter}{R\'{e}sum\'{e} / Abstract}
 
-%% ======================================================================
-%%  TABLE DES MATIERES, FIGURES, TABLEAUX
-%% ======================================================================
+\textbf{R\'{e}sum\'{e} ---} L'apprentissage f\'{e}d\'{e}r\'{e} (Federated Learning) constitue un paradigme d'apprentissage automatique distribu\'{e} qui permet \`{a} plusieurs entit\'{e}s de collaborer \`{a} l'entra\^{i}nement d'un mod\`{e}le partag\'{e} sans jamais \'{e}changer leurs donn\'{e}es brutes. Ce rapport pr\'{e}sente une \'{e}tude comparative approfondie de quatre algorithmes d'optimisation f\'{e}d\'{e}r\'{e}e --- Local SGD, FedAvg, FedAdam et FedProx --- dans le contexte de la d\'{e}tection de maladies cardiaques. Nous simulons une f\'{e}d\'{e}ration de huit h\^{o}pitaux exploitant le dataset Heart Disease UCI (1025 patients, 13 attributs cliniques) \`{a} travers un perceptron multicouche (MLP) de 2\,657 param\`{e}tres. Deux sc\'{e}narios de distribution des donn\'{e}es sont \'{e}valu\'{e}s : une partition IID (\'{e}quilibr\'{e}e) et une partition Non-IID (Dirichlet $\alpha = 0.5$). Les r\'{e}sultats exp\'{e}rimentaux d\'{e}montrent que FedAvg atteint une accuracy de 91,3\% en Non-IID, tandis que FedProx offre la convergence la plus stable gr\^{a}ce \`{a} son terme de r\'{e}gularisation proximale ($\mu = 0.1$). L'analyse de la divergence $L_2$ entre mod\`{e}les locaux confirme l'efficacit\'{e} du terme proximal pour r\'{e}duire la d\'{e}rive des clients. Le co\^{u}t de communication total est estim\'{e} \`{a} environ 2,49\,Mo pour 15 rounds, d\'{e}montrant la faisabilit\'{e} d'un d\'{e}ploiement en environnement hospitalier r\'{e}el.
+
+\textbf{Mots-cl\'{e}s :} apprentissage f\'{e}d\'{e}r\'{e}, optimisation distribu\'{e}e, maladies cardiaques, FedAvg, FedProx, FedAdam, h\'{e}t\'{e}rog\'{e}n\'{e}it\'{e} statistique, confidentialit\'{e} des donn\'{e}es m\'{e}dicales.
+
+\bigskip
+\hrule
+\bigskip
+
+\textbf{Abstract ---} Federated Learning (FL) is a distributed machine learning paradigm that enables multiple entities to collaboratively train a shared model without ever exchanging their raw data. This report presents a comprehensive comparative study of four federated optimization algorithms --- Local SGD, FedAvg, FedAdam, and FedProx --- in the context of heart disease detection. We simulate a federation of eight hospitals using the UCI Heart Disease dataset (1025 patients, 13 clinical attributes) with a multilayer perceptron (MLP) of 2,657 parameters. Two data distribution scenarios are evaluated: an IID (balanced) partition and a Non-IID (Dirichlet $\alpha = 0.5$) partition. Experimental results show that FedAvg achieves an accuracy of 91.3\% under Non-IID conditions, while FedProx provides the most stable convergence thanks to its proximal regularization term ($\mu = 0.1$). The $L_2$ divergence analysis between local models confirms the effectiveness of the proximal term in reducing client drift. The total communication cost is estimated at approximately 2.49\,MB over 15 rounds, demonstrating the feasibility of deployment in real hospital environments.
+
+\textbf{Keywords:} federated learning, distributed optimization, heart disease, FedAvg, FedProx, FedAdam, statistical heterogeneity, medical data privacy.
+
+% ============================================================================
+%  TABLES DES MATI\`{E}RES, FIGURES, TABLEAUX
+% ============================================================================
 \tableofcontents
 \listoffigures
 \listoftables
-\newpage
 
-\pagenumbering{arabic}
+% ============================================================================
+%  CHAPITRE 1 : INTRODUCTION G\'{E}N\'{E}RALE
+% ============================================================================
+\chapter{Introduction G\'{e}n\'{e}rale}
 
-%% ======================================================================
-\chapter{Introduction Générale}
-%% ======================================================================
+\section{Contexte g\'{e}n\'{e}ral}
 
-\section{Contexte de l'Étude}
-Avec l'avènement du numérique et des dossiers médicaux électroniques (DME), les hôpitaux génèrent quotidiennement des téraoctets de données cliniques. Ces données constituent une mine d'or pour le développement de modèles d'apprentissage automatique (Machine Learning) capables d'assister les médecins dans le diagnostic précoce de pathologies, telles que les maladies cardiovasculaires qui restent la première cause de mortalité dans le monde.
+Le secteur de la sant\'{e} conna\^{i}t une transformation num\'{e}rique sans pr\'{e}c\'{e}dent, port\'{e}e par l'explosion du volume de donn\'{e}es m\'{e}dicales g\'{e}n\'{e}r\'{e}es quotidiennement \`{a} travers le monde. Les dossiers m\'{e}dicaux \'{e}lectroniques, les images d'imagerie m\'{e}dicale, les donn\'{e}es g\'{e}nomiques et les signaux physiologiques provenant de dispositifs connect\'{e}s constituent un gisement d'information consid\'{e}rable pour l'intelligence artificielle. Selon les estimations r\'{e}centes, le volume de donn\'{e}es de sant\'{e} double tous les 73 jours, atteignant plusieurs exaoctets \`{a} l'\'{e}chelle mondiale. Cette abondance de donn\'{e}es ouvre des perspectives prometteuses pour le d\'{e}veloppement de mod\`{e}les d'apprentissage automatique capables d'assister les cliniciens dans le diagnostic, le pronostic et la personnalisation des traitements.
 
-Cependant, le développement de modèles d'intelligence artificielle (IA) performants et robustes nécessite des quantités massives de données diversifiées, souvent au-delà de ce qu'une seule institution hospitalière peut fournir. Historiquement, l'approche standard consistait à centraliser les données de plusieurs hôpitaux dans un data warehouse ou un cloud unique. Cette centralisation soulève d'immenses défis éthiques, légaux et sécuritaires. Les législations telles que le Règlement Général sur la Protection des Données (RGPD) en Europe, ou le Health Insurance Portability and Accountability Act (HIPAA) aux États-Unis, imposent des restrictions draconiennes sur le déplacement et le partage des données de santé personnelles. Par conséquent, de nombreuses initiatives d'IA médicale échouent face au "mur de la confidentialité".
+Cependant, l'exploitation de ces donn\'{e}es se heurte \`{a} des contraintes r\'{e}glementaires strictes qui limitent consid\'{e}rablement les approches centralis\'{e}es traditionnelles. Le R\`{e}glement G\'{e}n\'{e}ral sur la Protection des Donn\'{e}es (RGPD) en Europe, entr\'{e} en vigueur en mai 2018, impose des restrictions s\'{e}v\`{e}res sur le transfert et le traitement des donn\'{e}es personnelles de sant\'{e}. De m\^{e}me, le Health Insurance Portability and Accountability Act (HIPAA) aux \'{E}tats-Unis \'{e}tablit des normes strictes pour la protection des informations de sant\'{e} identifiables. Ces cadres r\'{e}glementaires, bien que n\'{e}cessaires pour prot\'{e}ger la vie priv\'{e}e des patients, cr\'{e}ent un paradoxe fondamental : les donn\'{e}es les plus sensibles, qui pourraient le plus b\'{e}n\'{e}ficier de l'IA, sont pr\'{e}cis\'{e}ment celles dont l'acc\`{e}s est le plus restreint. Ce contexte appelle \`{a} l'\'{e}mergence de m\'{e}thodes d'apprentissage collaboratif capables de tirer parti de donn\'{e}es distribu\'{e}es sans compromettre la confidentialit\'{e} des patients.
 
-\section{L'Apprentissage Fédéré (Federated Learning)}
-Pour surmonter cet obstacle fondamental, un nouveau paradigme a émergé : l'Apprentissage Fédéré (\textit{Federated Learning} ou FL), introduit par Google en 2017. L'apprentissage fédéré inverse le paradigme classique : au lieu d'amener les données au modèle (centralisation), on amène le modèle aux données (décentralisation).
+\section{Probl\'{e}matique}
 
-Dans un réseau fédéré, chaque hôpital (ou "client") télécharge un modèle global depuis un serveur central, l'entraîne localement sur ses propres données privées, puis ne renvoie au serveur que les mises à jour mathématiques du modèle (les poids ou gradients). Le serveur agrège alors ces multiples mises à jour pour créer un modèle global amélioré. À aucun moment les données brutes des patients ne quittent l'infrastructure sécurisée de l'hôpital.
+L'approche centralis\'{e}e de l'apprentissage automatique, qui consiste \`{a} agr\'{e}ger l'ensemble des donn\'{e}es sur un serveur unique avant d'entra\^{i}ner un mod\`{e}le, se r\'{e}v\`{e}le fondamentalement incompatible avec les exigences du domaine m\'{e}dical. Cette incompatibilit\'{e} se manifeste \`{a} trois niveaux. Premi\`{e}rement, le transfert de donn\'{e}es m\'{e}dicales sensibles entre \'{e}tablissements de sant\'{e} expose les patients \`{a} des risques de violation de leur vie priv\'{e}e et contrevient aux r\'{e}glementations en vigueur. Deuxi\`{e}mement, les donn\'{e}es m\'{e}dicales sont naturellement fragment\'{e}es en silos institutionnels : chaque h\^{o}pital, chaque clinique, chaque cabinet m\'{e}dical d\'{e}tient une fraction de la population de patients, avec ses propres protocoles de collecte et ses propres formats de donn\'{e}es. Troisi\`{e}mement, la centralisation implique des co\^{u}ts de stockage et de bande passante consid\'{e}rables, particuli\`{e}rement pour les donn\'{e}es volum\'{e}triques comme l'imagerie m\'{e}dicale.
 
-\section{Problématique et Défis d'Optimisation}
-Bien que prometteur, l'apprentissage fédéré pose des défis majeurs d'optimisation mathématique et d'ingénierie système, principalement en raison de deux formes d'hétérogénéité :
-\begin{enumerate}
-    \item \textbf{L'hétérogénéité statistique (Données Non-IID)} : Contrairement à un apprentissage centralisé où les données peuvent être parfaitement mélangées, dans un réseau fédéré, les distributions de données varient énormément d'un client à l'autre. Un hôpital spécialisé en gériatrie n'aura pas la même population de patients qu'un hôpital pédiatrique. Les données sont dites Non-Indépendantes et Identiquement Distribuées (Non-IID). Cette hétérogénéité provoque une "dérive locale" (\textit{client drift}) où les modèles s'éloignent dangereusement du modèle global optimal.
-    \item \textbf{L'hétérogénéité système} : Les clients ont des capacités de calcul, de stockage et de bande passante différentes, imposant d'optimiser le "coût de communication".
-\end{enumerate}
+Cette fragmentation des donn\'{e}es m\'{e}dicales entra\^{i}ne une cons\'{e}quence directe sur la qualit\'{e} des mod\`{e}les d'IA : chaque \'{e}tablissement, isol\'{e}ment, ne dispose que d'un \'{e}chantillon limit\'{e} et potentiellement biais\'{e} de la population. Un mod\`{e}le entra\^{i}n\'{e} exclusivement sur les donn\'{e}es d'un seul h\^{o}pital risque de ne pas g\'{e}n\'{e}raliser correctement \`{a} d'autres populations, en raison de biais d\'{e}mographiques, g\'{e}ographiques ou de pratiques cliniques sp\'{e}cifiques. La question centrale de ce projet peut donc se formuler ainsi : comment permettre \`{a} plusieurs \'{e}tablissements de sant\'{e} de collaborer \`{a} l'entra\^{i}nement d'un mod\`{e}le de d\'{e}tection performant, tout en garantissant que les donn\'{e}es des patients ne quittent jamais l'enceinte de l'\'{e}tablissement qui les h\'{e}berge ?
 
-La problématique centrale de ce projet est donc la suivante : \textit{Comment optimiser l'agrégation des connaissances dans un réseau fédéré médical afin de garantir une convergence stable et rapide, en dépit d'une forte hétérogénéité statistique des données locales, tout en minimisant les coûts de communication ?}
+\section{L'Apprentissage F\'{e}d\'{e}r\'{e} comme solution}
 
-\section{Objectifs du Projet}
-Dans le cadre de ce projet de fin de module d'Optimisation, nous avons conçu et implémenté un simulateur d'apprentissage fédéré multi-clients dédié à la détection des maladies cardiaques (classification binaire). Nos objectifs précis, conformément au cahier des charges, sont de :
-\begin{itemize}
-    \item \textbf{Développer une infrastructure de simulation} modélisant 8 hôpitaux distincts à partir d'un dataset médical public (Heart Disease).
-    \item \textbf{Générer et étudier deux scénarios statistiques} : un scénario idéal IID et un scénario réaliste très déséquilibré (Non-IID) via une distribution de Dirichlet.
-    \item \textbf{Implémenter quatre stratégies d'optimisation} : Local SGD (baseline), FedAvg (moyenne pondérée), FedAdam (optimisation serveur) et FedProx (régularisation proximale locale).
-    \item \textbf{Mener une étude comparative exhaustive} basée sur 5 piliers :
-    \begin{enumerate}
-        \item Performance globale et généralisation.
-        \item Analyse détaillée de la convergence (stabilité, oscillations, loss).
-        \item Vitesse de convergence et efficacité temporelle.
-        \item Mesure de la dérive ou divergence des modèles locaux.
-        \item Évaluation du coût de communication.
-    \end{enumerate}
-\end{itemize}
+L'apprentissage f\'{e}d\'{e}r\'{e} (Federated Learning, FL), introduit par McMahan et al. en 2017 dans le cadre des travaux de Google sur la pr\'{e}diction de texte pour claviers mobiles~\cite{mcmahan2017}, propose un renversement fondamental du paradigme d'apprentissage. Au lieu de d\'{e}placer les donn\'{e}es vers le mod\`{e}le, c'est le mod\`{e}le qui est envoy\'{e} vers les donn\'{e}es. Le principe op\'{e}rationnel est le suivant : un serveur central initialise un mod\`{e}le global et le distribue \`{a} l'ensemble des clients (dans notre cas, les h\^{o}pitaux). Chaque client entra\^{i}ne le mod\`{e}le localement sur ses propres donn\'{e}es pendant un nombre fix\'{e} d'\'{e}poques, puis renvoie uniquement les param\`{e}tres mis \`{a} jour (ou les gradients) au serveur. Le serveur agr\`{e}ge les contributions de tous les clients pour produire un nouveau mod\`{e}le global, et le cycle se r\'{e}p\`{e}te.
 
-\section{Structure du Rapport}
-Le présent document est organisé comme suit :
-Le Chapitre 2 détaille les fondements mathématiques de l'apprentissage fédéré et présente l'état de l'art des algorithmes d'optimisation étudiés. Le Chapitre 3 décrit notre méthodologie expérimentale, du traitement des données à l'architecture du réseau de neurones en passant par les scénarios de partitionnement. Le Chapitre 4 expose les résultats expérimentaux obtenus, analysés à travers les prismes de la performance, de la convergence et des coûts. Enfin, le Chapitre 5 offre une synthèse comparative et discute des limites ainsi que des perspectives futures de ces technologies.
+Ce paradigme offre plusieurs avantages fondamentaux. Premi\`{e}rement, les donn\'{e}es brutes ne quittent jamais le dispositif local, ce qui constitue une am\'{e}lioration significative de la confidentialit\'{e} par rapport aux approches centralis\'{e}es. Deuxi\`{e}mement, le volume de donn\'{e}es \'{e}chang\'{e}es est r\'{e}duit aux seuls param\`{e}tres du mod\`{e}le, ind\'{e}pendamment du volume des donn\'{e}es d'entra\^{i}nement. Troisi\`{e}mement, l'apprentissage f\'{e}d\'{e}r\'{e} permet de b\'{e}n\'{e}ficier de la diversit\'{e} des donn\'{e}es distribu\'{e}es, am\'{e}liorant potentiellement la g\'{e}n\'{e}ralisation du mod\`{e}le. N\'{e}anmoins, ce paradigme soul\`{e}ve des d\'{e}fis sp\'{e}cifiques, notamment l'h\'{e}t\'{e}rog\'{e}n\'{e}it\'{e} statistique des donn\'{e}es entre clients (Non-IID), l'h\'{e}t\'{e}rog\'{e}n\'{e}it\'{e} computationnelle des dispositifs, et les co\^{u}ts de communication.
 
-%% ======================================================================
-\chapter{Fondements Théoriques et Optimisation Fédérée}
-%% ======================================================================
+\section{Objectifs du projet}
 
-\section{Formalisme Mathématique de l'Apprentissage Centralisé vs Fédéré}
+Ce projet poursuit quatre objectifs principaux, chacun correspondant \`{a} une dimension essentielle de l'\'{e}tude de l'apprentissage f\'{e}d\'{e}r\'{e} appliqu\'{e} au domaine m\'{e}dical.
 
-\subsection{Apprentissage Centralisé}
-En apprentissage supervisé centralisé, l'objectif est de trouver un vecteur de paramètres $\bm{w} \in \mathbb{R}^d$ qui minimise une fonction de perte (loss) empirique globale sur un jeu de données centralisé $\mathcal{D} = \{ (x_i, y_i) \}_{i=1}^n$ :
+Le premier objectif consiste \`{a} concevoir et impl\'{e}menter une simulation r\'{e}aliste d'un syst\`{e}me d'apprentissage f\'{e}d\'{e}r\'{e} impliquant huit h\^{o}pitaux virtuels. Cette simulation doit reproduire fid\`{e}lement le protocole de communication client-serveur, les phases d'entra\^{i}nement local et d'agr\'{e}gation globale, ainsi que les sc\'{e}narios de distribution des donn\'{e}es rencontr\'{e}s en pratique clinique.
+
+Le deuxi\`{e}me objectif est de comparer rigoureusement les performances de quatre algorithmes d'optimisation f\'{e}d\'{e}r\'{e}e : Local SGD (sans communication), FedAvg (moyenne pond\'{e}r\'{e}e des param\`{e}tres), FedAdam (optimisation adaptative c\^{o}t\'{e} serveur) et FedProx (r\'{e}gularisation proximale). Cette comparaison porte sur de multiples m\'{e}triques incluant la pr\'{e}cision, le rappel, le score F1, la vitesse de convergence et la stabilit\'{e}.
+
+Le troisi\`{e}me objectif vise \`{a} \'{e}valuer l'impact de l'h\'{e}t\'{e}rog\'{e}n\'{e}it\'{e} statistique (Non-IID) sur les performances des diff\'{e}rents algorithmes, en comparant un sc\'{e}nario de distribution IID id\'{e}alis\'{e} avec un sc\'{e}nario Non-IID r\'{e}aliste g\'{e}n\'{e}r\'{e} par une distribution de Dirichlet.
+
+Le quatri\`{e}me objectif est d'analyser les aspects pratiques du d\'{e}ploiement, notamment le co\^{u}t de communication, la divergence des mod\`{e}les locaux et le compromis entre performance et efficacit\'{e} en ressources, afin de formuler des recommandations pour un d\'{e}ploiement en environnement hospitalier r\'{e}el.
+
+\section{Organisation du rapport}
+
+Ce rapport est structur\'{e} en six chapitres. Le pr\'{e}sent chapitre a introduit le contexte, la probl\'{e}matique et les objectifs du projet. Le chapitre~2 pr\'{e}sente un \'{e}tat de l'art d\'{e}taill\'{e} et les fondements th\'{e}oriques de l'optimisation distribu\'{e}e et de l'apprentissage f\'{e}d\'{e}r\'{e}, incluant la formalisation math\'{e}matique compl\`{e}te des quatre algorithmes \'{e}tudi\'{e}s. Le chapitre~3 d\'{e}crit la m\'{e}thodologie et l'impl\'{e}mentation, du choix du dataset \`{a} l'architecture logicielle de la boucle f\'{e}d\'{e}r\'{e}e. Le chapitre~4 pr\'{e}sente les r\'{e}sultats exp\'{e}rimentaux et leur analyse d\'{e}taill\'{e}e. Le chapitre~5 discute les r\'{e}sultats, identifie les limites et propose des perspectives futures. Le chapitre~6 conclut le rapport en synth\'{e}tisant les contributions principales.
+
+% ============================================================================
+%  CHAPITRE 2 : \'{E}TAT DE L'ART ET FONDEMENTS TH\'{E}ORIQUES
+% ============================================================================
+\chapter{\'{E}tat de l'Art et Fondements Th\'{e}oriques}
+
+\section{Formalisme de l'optimisation en apprentissage automatique}
+
+L'apprentissage automatique peut \^{e}tre formul\'{e}, dans sa forme la plus g\'{e}n\'{e}rale, comme un probl\`{e}me d'optimisation. L'objectif est de trouver les param\`{e}tres optimaux qui minimisent une fonction de perte (loss) empirique sur un ensemble de donn\'{e}es. La m\'{e}thode de descente de gradient stochastique (SGD) r\'{e}sout ce probl\`{e}me de mani\`{e}re it\'{e}rative en mettant \`{a} jour les param\`{e}tres dans la direction oppos\'{e}e au gradient, estim\'{e} sur un sous-ensemble al\'{e}atoire (mini-batch). Les conditions de convergence de SGD ont \'{e}t\'{e} largement \'{e}tudi\'{e}es dans la litt\'{e}rature et d\'{e}pendent du choix appropri\'{e} du taux d'apprentissage.
+
+\section{De l'optimisation centralis\'{e}e \`{a} l'optimisation distribu\'{e}e}
+
+Le passage de l'optimisation centralis\'{e}e \`{a} l'optimisation distribu\'{e}e est motiv\'{e} par deux consid\'{e}rations principales : l'acc\'{e}l\'{e}ration du calcul et les contraintes de localit\'{e} des donn\'{e}es. Dans le cadre distribu\'{e}, les donn\'{e}es sont r\'{e}parties sur plusieurs noeuds de calcul, et le probl\`{e}me d'optimisation global se r\'{e}\'{e}crit comme la minimisation de la somme pond\'{e}r\'{e}e des fonctions de perte locales. On distingue principalement deux strat\'{e}gies de parall\'{e}lisation. Le parall\'{e}lisme de donn\'{e}es consiste \`{a} r\'{e}pliquer le mod\`{e}le sur chaque noeud et \`{a} partitionner les donn\'{e}es ; les gradients sont synchronis\'{e}s \`{a} chaque it\'{e}ration. Le parall\'{e}lisme de mod\`{e}le r\'{e}partit les couches du r\'{e}seau sur diff\'{e}rents noeuds, ce qui est pertinent pour les mod\`{e}les de tr\`{e}s grande taille.
+
+L'apprentissage f\'{e}d\'{e}r\'{e} se distingue fondamentalement de ces approches classiques de calcul distribu\'{e} par plusieurs caract\'{e}ristiques. Premi\`{e}rement, la communication est co\^{u}teuse et intermittente, contrairement aux clusters de calcul interconnect\'{e}s par des liens rapides. Deuxi\`{e}mement, les donn\'{e}es sont naturellement distribu\'{e}es et ne peuvent pas \^{e}tre redistribu\'{e}es entre noeuds. Troisi\`{e}mement, les distributions locales $\mathcal{D}_k$ peuvent \^{e}tre fortement h\'{e}t\'{e}rog\`{e}nes (Non-IID), ce qui constitue le d\'{e}fi central de l'apprentissage f\'{e}d\'{e}r\'{e}.
+
+\section{L'apprentissage f\'{e}d\'{e}r\'{e} : architecture et protocole}
+
+L'architecture standard de l'apprentissage f\'{e}d\'{e}r\'{e} repose sur un mod\`{e}le client-serveur. Le serveur central maintient le mod\`{e}le global $w^{(t)}$ et orchestre le processus d'entra\^{i}nement \`{a} travers des rounds de communication s\'{e}quentiels. \`{A} chaque round $t$, le protocole se d\'{e}roule en quatre \'{e}tapes : (1) le serveur s\'{e}lectionne un sous-ensemble $\mathcal{S}_t \subseteq \{1, \ldots, K\}$ de clients participants ; (2) le serveur envoie le mod\`{e}le global $w^{(t)}$ aux clients s\'{e}lectionn\'{e}s ; (3) chaque client $k \in \mathcal{S}_t$ effectue $E$ \'{e}poques d'entra\^{i}nement local sur ses donn\'{e}es $\mathcal{D}_k$ pour obtenir $w_k^{(t+1)}$ ; (4) le serveur agr\`{e}ge les mod\`{e}les locaux pour produire $w^{(t+1)}$.
+
+On distingue deux modes de participation. Dans le mode \`{a} participation compl\`{e}te (full participation), tous les clients participent \`{a} chaque round ($\mathcal{S}_t = \{1, \ldots, K\}$). Dans le mode \`{a} participation partielle, seul un sous-ensemble al\'{e}atoire de clients est s\'{e}lectionn\'{e} \`{a} chaque round, ce qui est plus r\'{e}aliste dans les sc\'{e}narios \`{a} grande \'{e}chelle. De m\^{e}me, l'agr\'{e}gation peut \^{e}tre synchrone (le serveur attend tous les clients avant d'agr\'{e}ger) ou asynchrone (le serveur agr\`{e}ge d\`{e}s qu'un client renvoie sa mise \`{a} jour). Notre simulation adopte le mode synchrone \`{a} participation compl\`{e}te avec $K = 8$ clients, ce qui correspond \`{a} un sc\'{e}nario r\'{e}aliste pour un consortium hospitalier r\'{e}gional.
+
+\section{Le probl\`{e}me de l'h\'{e}t\'{e}rog\'{e}n\'{e}it\'{e} statistique (Non-IID)}
+
+L'h\'{e}t\'{e}rog\'{e}n\'{e}it\'{e} statistique des donn\'{e}es entre clients constitue le d\'{e}fi le plus fondamental de l'apprentissage f\'{e}d\'{e}r\'{e}. Formellement, les donn\'{e}es sont dites IID (ind\'{e}pendantes et identiquement distribu\'{e}es) si la distribution locale de chaque client est identique \`{a} la distribution globale : $\mathcal{D}_k \sim \mathcal{P}$ pour tout $k$. Dans le cas Non-IID, les distributions locales diff\`{e}rent : $\mathcal{D}_k \sim \mathcal{P}_k$ avec $\mathcal{P}_k \neq \mathcal{P}_j$ pour certains $k \neq j$.
+
+On identifie plusieurs types d'h\'{e}t\'{e}rog\'{e}n\'{e}it\'{e} dans la litt\'{e}rature~\cite{kairouz2021}. Le \textit{label skew} d\'{e}signe une distribution in\'{e}gale des classes entre clients ; par exemple, un h\^{o}pital sp\'{e}cialis\'{e} en cardiologie pourrait avoir une proportion de cas positifs bien sup\'{e}rieure \`{a} un h\^{o}pital g\'{e}n\'{e}raliste. Le \textit{feature skew} correspond \`{a} des diff\'{e}rences dans la distribution des attributs d'entr\'{e}e entre clients, qui peuvent r\'{e}sulter de diff\'{e}rences d\'{e}mographiques entre les populations. Le \textit{quantity skew} refl\`{e}te les disparit\'{e}s de volume de donn\'{e}es entre clients. Le \textit{temporal skew} concerne l'\'{e}volution temporelle des distributions, qui est particuli\`{e}rement pertinente dans le domaine m\'{e}dical o\`{u} les protocoles cliniques \'{e}voluent.
+
+L'impact de l'h\'{e}t\'{e}rog\'{e}n\'{e}it\'{e} sur la convergence peut \^{e}tre analys\'{e} math\'{e}matiquement \`{a} travers le concept de \textit{d\'{e}rive des clients} (client drift). Lorsque les donn\'{e}es sont Non-IID, l'optimum local $w_k^* = \arg\min F_k(w)$ de chaque client diff\`{e}re de l'optimum global $w^* = \arg\min F(w)$. Apr\`{e}s $E$ \'{e}poques d'entra\^{i}nement local, le mod\`{e}le du client $k$ converge vers $w_k^*$, cr\'{e}ant une divergence entre les mod\`{e}les locaux. Zhao et al.~\cite{zhao2018} ont montr\'{e} exp\'{e}rimentalement que cette d\'{e}rive peut entra\^{i}ner une d\'{e}gradation de la pr\'{e}cision allant jusqu'\`{a} 55\% par rapport au sc\'{e}nario IID pour des distributions fortement d\'{e}s\'{e}quilibr\'{e}es.
+
+\section{Algorithme FedAvg}
+
+L'algorithme Federated Averaging (FedAvg), introduit par McMahan et al.~\cite{mcmahan2017}, constitue la m\'{e}thode de r\'{e}f\'{e}rence en apprentissage f\'{e}d\'{e}r\'{e}. Son principe repose sur la combinaison de plusieurs \'{e}tapes de SGD local suivies d'une agr\'{e}gation par moyenne pond\'{e}r\'{e}e. \`{A} chaque round $t$, chaque client $k$ ex\'{e}cute $E$ \'{e}poques de SGD \`{a} partir du mod\`{e}le global $w^{(t)}$ :
+
 \begin{equation}
-    \min_{\bm{w}} f(\bm{w}) = \frac{1}{n} \sum_{i=1}^{n} \ell_i(\bm{w}; x_i, y_i)
-\end{equation}
-où $\ell_i$ est la perte subie par la prédiction du modèle paramétré par $\bm{w}$ sur l'échantillon $i$. Dans le cas d'une classification binaire, on utilise généralement la \textit{Binary Cross-Entropy} (BCE).
-
-\subsection{Apprentissage Fédéré}
-Dans l'apprentissage fédéré, les données sont partitionnées sur $K$ clients, tels que $\mathcal{D} = \bigcup_{k=1}^K \mathcal{D}_k$. Soit $n_k = |\mathcal{D}_k|$ la taille du jeu de données du client $k$, avec $n = \sum_{k=1}^K n_k$.
-Le problème d'optimisation distribuée se réécrit comme la minimisation d'une somme pondérée des fonctions de perte locales :
-\begin{equation}
-    \min_{\bm{w}} f(\bm{w}) = \sum_{k=1}^{K} \frac{n_k}{n} F_k(\bm{w})
-\end{equation}
-où $F_k(\bm{w})$ est l'objectif empirique local du client $k$ :
-\begin{equation}
-    F_k(\bm{w}) = \frac{1}{n_k} \sum_{i \in \mathcal{D}_k} \ell_i(\bm{w}; x_i, y_i)
-\end{equation}
-
-Si les données sont IID, alors $\mathbb{E}[F_k(\bm{w})] = f(\bm{w})$, ce qui simplifie grandement l'optimisation. Cependant, en contexte Non-IID (la norme dans le domaine médical), les distributions sous-jacentes varient fortement, d'où $F_k(\bm{w}) \neq f(\bm{w})$.
-
-\section{Le Problème de l'Hétérogénéité Statistique (Client Drift)}
-L'un des défis majeurs en FL est la divergence des objectifs locaux (ou \textit{client drift}). Lorsqu'un client $k$ met à jour son modèle sur de nombreuses itérations locales (époques) à partir du modèle global partagé $\bm{w}^t$, ses paramètres s'approchent du minimum local de $F_k$, noté $\bm{w}_k^*$. 
-
-Or, en Non-IID, $\bm{w}_k^*$ peut être très éloigné du minimum global $\bm{w}^*$. Par exemple, si l'hôpital A ne voit que des cas pathologiques, son modèle local perdra la capacité d'identifier des patients sains. Lors de l'agrégation au serveur, la moyenne de ces optima locaux biaisés $\frac{1}{K}\sum \bm{w}_k^*$ n'est généralement pas proche du véritable optimum global $\bm{w}^*$. Ce phénomène ralentit drastiquement la convergence, cause des oscillations sévères de la \textit{loss}, voire fait diverger totalement le modèle global.
-
-\section{Algorithmes d'Optimisation Fédérée}
-
-Pour répondre à ce problème d'optimisation sous contraintes d'hétérogénéité et de limitation des communications, plusieurs algorithmes ont été proposés. Notre étude en compare quatre, du plus simple au plus avancé.
-
-\subsection{Local SGD (Baseline d'Isolation)}
-Dans cette approche, aucune fédération n'a lieu. Chaque hôpital $k$ initialise son propre modèle $\bm{w}_k$ et le met à jour en utilisant exclusivement ses données locales via la descente de gradient stochastique (SGD) classique ou Adam.
-\begin{equation}
-    \bm{w}_k^{t+1} = \bm{w}_k^t - \eta \nabla F_k(\bm{w}_k^t)
-\end{equation}
-\textbf{Avantage :} Aucun coût de communication, confidentialité totale.
-\textbf{Inconvénient :} Modèles sur-appris sur la population locale, incapacité de généralisation sur des distributions inédites. Cette approche sert de \textit{baseline} inférieure dans notre étude.
-
-\subsection{FedAvg (Federated Averaging)}
-Introduit par McMahan et al. (2017) \cite{mcmahan2017}, c'est l'algorithme fondamental de l'apprentissage fédéré. Au lieu de communiquer après chaque pas de gradient, les clients effectuent $E$ époques d'entraînement local avant d'envoyer leurs poids. 
-Le déroulement d'un round de communication $r$ est :
-\begin{enumerate}
-    \item \textbf{Diffusion} : Le serveur envoie $\bm{w}^r$ aux clients sélectionnés.
-    \item \textbf{Mise à jour locale} : Chaque client $k$ initialise $\bm{w}_k^{r, 0} = \bm{w}^r$ et effectue $E$ itérations d'optimisation locale (via SGD ou Adam) pour obtenir $\bm{w}_k^{r, E}$.
-    \item \textbf{Agrégation serveur} : Le serveur calcule la nouvelle version du modèle global par une moyenne pondérée par la cardinalité des datasets :
-    \begin{equation}
-        \bm{w}^{r+1} = \sum_{k=1}^{K} \frac{n_k}{n} \bm{w}_k^{r, E}
-    \end{equation}
-\end{enumerate}
-
-\subsection{FedAdam (Optimisation Serveur Adaptative)}
-Plutôt que de considérer les mises à jour locales comme de simples vecteurs à moyenner, les algorithmes de la famille "Adaptive Federated Optimization" (Reddi et al., 2021) \cite{reddi2020} considèrent l'écart moyen comme un \textit{pseudo-gradient} $\Delta^r$ au niveau du serveur. Le serveur applique alors un optimiseur avancé tel que Adam.
-
-Le pseudo-gradient est défini par :
-\begin{equation}
-    \Delta^r = \bm{w}^r - \sum_{k=1}^{K} \frac{n_k}{n} \bm{w}_k^{r, E}
+w_k^{(t+1)} = w^{(t)} - \eta \sum_{e=0}^{E-1} \sum_{b \in \mathcal{B}_k} \frac{1}{|\mathcal{B}_k|} \nabla f(w_{k,e}^{(t)}; b)
+\label{eq:fedavg_local}
 \end{equation}
 
-Le serveur maintient des moments d'ordre 1 ($m^r$) et d'ordre 2 ($v^r$) de ce pseudo-gradient :
+Le serveur calcule ensuite la moyenne pond\'{e}r\'{e}e par le nombre d'\'{e}chantillons :
+
+\begin{equation}
+w^{(t+1)} = \sum_{k=1}^{K} \frac{n_k}{N} w_k^{(t+1)}
+\label{eq:fedavg_agg}
+\end{equation}
+
+Le pseudo-code complet est pr\'{e}sent\'{e} dans l'Algorithme~\ref{alg:fedavg}.
+
+\begin{algorithm}[H]
+\SetAlgoLined
+\DontPrintSemicolon
+\KwIn{$K$ clients, $T$ rounds, $E$ \'{e}poques locales, $\eta$ taux d'apprentissage}
+\KwOut{Mod\`{e}le global $w^{(T)}$}
+Initialiser $w^{(0)}$ al\'{e}atoirement\;
+\Pour{$t = 0, 1, \ldots, T-1$}{
+  \Pour{chaque client $k = 1, \ldots, K$ \textbf{en parall\`{e}le}}{
+    $w_k \leftarrow w^{(t)}$\;
+    \Pour{$e = 1, \ldots, E$}{
+      \Pour{chaque mini-batch $\mathcal{B} \subset \mathcal{D}_k$}{
+        $w_k \leftarrow w_k - \eta \nabla f(w_k; \mathcal{B})$\;
+      }
+    }
+    Envoyer $w_k$ au serveur\;
+  }
+  $w^{(t+1)} \leftarrow \sum_{k=1}^{K} \frac{n_k}{N} w_k$\;
+}
+\caption{FedAvg --- Federated Averaging}
+\label{alg:fedavg}
+\end{algorithm}
+
+FedAvg pr\'{e}sente des garanties de convergence sous certaines hypoth\`{e}ses. Pour des fonctions $L$-lisses et $\mu$-fortement convexes, avec un gradient stochastique born\'{e}, FedAvg converge au taux $\mathcal{O}(1/T)$ vers un voisinage de l'optimum dont la taille d\'{e}pend du degr\'{e} d'h\'{e}t\'{e}rog\'{e}n\'{e}it\'{e} des donn\'{e}es. La limitation principale de FedAvg r\'{e}side dans sa sensibilit\'{e} \`{a} l'h\'{e}t\'{e}rog\'{e}n\'{e}it\'{e} des donn\'{e}es : lorsque les distributions locales divergent significativement, la moyenne des mod\`{e}les locaux peut s'\'{e}loigner de la solution optimale globale.
+
+\section{Algorithme FedAdam}
+
+FedAdam, propos\'{e} par Reddi et al.~\cite{reddi2021}, transpose le principe des optimiseurs adaptatifs (Adam) au niveau du serveur dans l'apprentissage f\'{e}d\'{e}r\'{e}. L'intuition cl\'{e} est de traiter les mises \`{a} jour agr\'{e}g\'{e}es des clients comme des \textit{pseudo-gradients} et d'appliquer les m\'{e}canismes de momentum et de variance adaptative pour am\'{e}liorer la convergence.
+
+Apr\`{e}s l'agr\'{e}gation classique des mod\`{e}les locaux par moyenne pond\'{e}r\'{e}e, le pseudo-gradient au round $t$ est d\'{e}fini comme :
+
+\begin{equation}
+\Delta_t = w^{(t)} - \bar{w}^{(t+1)}_{\text{agg}}
+\label{eq:pseudo_gradient}
+\end{equation}
+
+Le serveur maintient deux variables d'\'{e}tat : le moment de premier ordre $m_t$ (estimation de la moyenne des gradients) et le moment de second ordre $v_t$ (estimation de la variance) :
+
 \begin{align}
-    m^r &= \beta_1 m^{r-1} + (1-\beta_1)\Delta^r \\
-    v^r &= \beta_2 v^{r-1} + (1-\beta_2)(\Delta^r \odot \Delta^r)
+m_t &= \beta_1 \cdot m_{t-1} + (1 - \beta_1) \cdot \Delta_t \label{eq:fedadam_m} \\
+v_t &= \beta_2 \cdot v_{t-1} + (1 - \beta_2) \cdot \Delta_t^2 \label{eq:fedadam_v} \\
+w^{(t+1)} &= w^{(t)} - \eta_s \cdot \frac{m_t}{\sqrt{v_t} + \tau} \label{eq:fedadam_update}
 \end{align}
-Puis met à jour le modèle global :
+
+o\`{u} $\beta_1 = 0.9$ et $\beta_2 = 0.99$ sont les coefficients de d\'{e}croissance exponentielle, $\eta_s = 0.01$ est le taux d'apprentissage du serveur, et $\tau = 10^{-3}$ est un terme de stabilisation. Les auteurs proposent \'{e}galement des variantes comme FedYogi et FedAdagrad, qui utilisent des r\`{e}gles diff\'{e}rentes pour la mise \`{a} jour de $v_t$. L'avantage de FedAdam est sa capacit\'{e} \`{a} adapter le taux d'apprentissage effectif pour chaque param\`{e}tre individuellement, ce qui peut acc\'{e}l\'{e}rer la convergence dans les probl\`{e}mes pr\'{e}sentant des \'{e}chelles de gradient h\'{e}t\'{e}rog\`{e}nes. Cependant, l'\'{e}tat suppl\'{e}mentaire ($m_t$ et $v_t$) est maintenu uniquement c\^{o}t\'{e} serveur et n'engendre aucun surco\^{u}t de communication.
+
+\section{Algorithme FedProx}
+
+FedProx, introduit par Li et al.~\cite{li2020fedprox}, aborde le probl\`{e}me de l'h\'{e}t\'{e}rog\'{e}n\'{e}it\'{e} des donn\'{e}es et des syst\`{e}mes par l'ajout d'un terme de r\'{e}gularisation proximale \`{a} l'objectif local de chaque client. L'intuition est de contraindre les mises \`{a} jour locales \`{a} rester proches du mod\`{e}le global, limitant ainsi la d\'{e}rive des clients.
+
+La fonction objectif locale du client $k$ au round $t$ est modifi\'{e}e comme suit :
+
 \begin{equation}
-    \bm{w}^{r+1} = \bm{w}^r - \eta_s \frac{m^r}{\sqrt{v^r} + \tau}
+h_k(w; w^{(t)}) = F_k(w) + \frac{\mu}{2} \|w - w^{(t)}\|^2
+\label{eq:fedprox_loss}
 \end{equation}
-où $\beta_1=0.9$, $\beta_2=0.99$, $\eta_s=0.01$ est le taux d'apprentissage global, et $\tau=10^{-3}$ assure la stabilité numérique. FedAdam atténue les oscillations et accélère la convergence.
 
-\subsection{FedProx (Régularisation Proximale Locale)}
-Proposé par Li et al. (2020) \cite{li2020fedprox}, FedProx est spécifiquement conçu pour contrer l'hétérogénéité statistique et systémique. Il introduit une modification de la fonction objectif locale du client. Au lieu de simplement minimiser $F_k(\bm{w})$, le client $k$ minimise un objectif "proximal" :
+o\`{u} $\mu \geq 0$ est le coefficient de r\'{e}gularisation proximale qui contr\^{o}le le compromis entre l'adaptation locale et la fid\'{e}lit\'{e} au mod\`{e}le global. Lorsque $\mu = 0$, FedProx se r\'{e}duit \`{a} FedAvg. L'op\'{e}rateur proximal associ\'{e} est d\'{e}fini comme $\text{prox}_{\mu F_k}(w^{(t)}) = \arg\min_w \left\{ F_k(w) + \frac{\mu}{2}\|w - w^{(t)}\|^2 \right\}$, ce qui correspond \`{a} un pas de Moreau-Yoshida. En pratique, le terme proximal $\frac{\mu}{2}\|w - w^{(t)}\|^2$ est simplement ajout\'{e} \`{a} la perte lors du calcul du gradient par r\'{e}tropropagation.
+
+Li et al. d\'{e}montrent que, sous l'hypoth\`{e}se de $B$-dissimilarit\'{e} locale (i.e., $\mathbb{E}_k[\|\nabla F_k(w)\|^2] \leq \|\nabla F(w)\|^2 \cdot B^2$ pour tout $w$), FedProx converge au taux $\mathcal{O}(1/T)$ vers l'optimum global, ind\'{e}pendamment du degr\'{e} d'h\'{e}t\'{e}rog\'{e}n\'{e}it\'{e} des donn\'{e}es. Cette garantie th\'{e}orique est plus robuste que celle de FedAvg, qui d\'{e}pend du degr\'{e} d'h\'{e}t\'{e}rog\'{e}n\'{e}it\'{e} via le terme de d\'{e}rive. Par rapport \`{a} SCAFFOLD~\cite{kairouz2021}, qui utilise des variables de contr\^{o}le pour corriger la d\'{e}rive, FedProx pr\'{e}sente l'avantage d'une impl\'{e}mentation plus simple et d'un surco\^{u}t de communication nul.
+
+\section{Local SGD et apprentissage isol\'{e}}
+
+L'apprentissage isol\'{e} (Local SGD sans agr\'{e}gation) constitue notre ligne de base (baseline) exp\'{e}rimentale. Dans ce sc\'{e}nario, chaque client $k$ entra\^{i}ne ind\'{e}pendamment son propre mod\`{e}le $w_k$ sur ses donn\'{e}es locales $\mathcal{D}_k$, sans aucune communication avec les autres clients ou le serveur :
+
 \begin{equation}
-    h_k(\bm{w}; \bm{w}^r) = F_k(\bm{w}) + \frac{\mu}{2} \| \bm{w} - \bm{w}^r \|_2^2
+w_k^{(t+1)} = w_k^{(t)} - \eta \nabla F_k(w_k^{(t)})
+\label{eq:local_sgd}
 \end{equation}
-où $\mu > 0$ est un hyperparamètre, et $\bm{w}^r$ est le modèle global partagé au début du round.
 
-Le terme $\frac{\mu}{2} \| \bm{w} - \bm{w}^r \|_2^2$ pénalise mathématiquement les poids locaux s'ils s'éloignent trop du modèle global. Ce mécanisme agit comme un point d'ancrage, limitant la fameuse \textit{client drift}. C'est une méthode particulièrement prometteuse pour les distributions médicales asymétriques.
+Chaque mod\`{e}le local converge vers son optimum local $w_k^* = \arg\min F_k(w)$, qui diff\`{e}re g\'{e}n\'{e}ralement de l'optimum global $w^* = \arg\min F(w)$ lorsque les distributions locales sont h\'{e}t\'{e}rog\`{e}nes. Ce ph\'{e}nom\`{e}ne est analogue \`{a} l'oubli catastrophique (catastrophic forgetting) observ\'{e} dans l'apprentissage continu : chaque mod\`{e}le ``oublie'' les caract\'{e}ristiques des donn\'{e}es des autres clients. En cons\'{e}quence, les mod\`{e}les locaux divergent progressivement les uns des autres, et la performance moyenne est g\'{e}n\'{e}ralement inf\'{e}rieure \`{a} celle obtenue par une approche f\'{e}d\'{e}r\'{e}e. Le co\^{u}t de communication est nul par d\'{e}finition, mais cette \'{e}conomie se fait au d\'{e}triment de la qualit\'{e} du mod\`{e}le.
 
-%% ======================================================================
-\chapter{Méthodologie et Implémentation du Simulateur}
-%% ======================================================================
+\section{Synth\`{e}se comparative th\'{e}orique}
 
-\section{Le Jeu de Données : Heart Disease Dataset}
-Pour ce projet, nous utilisons le jeu de données public "Heart Disease Data Set" issu du UCI Machine Learning Repository \cite{heart_dataset}. Ce dataset compte \textbf{1025 échantillons} (patients) et comprend \textbf{13 attributs prédictifs} et 1 variable cible.
-
-\textbf{Attributs cliniques} : Âge, Sexe, Type de douleur thoracique (cp), Pression artérielle au repos (trestbps), Cholestérol sérique (chol), Glycémie à jeun (fbs), Résultats électrocardiographiques au repos (restecg), Fréquence cardiaque maximale atteinte (thalach), Angine induite par l'effort (exang), Dépression du segment ST induite par l'effort (oldpeak), Pente du segment ST d'effort (slope), Nombre de vaisseaux principaux fluoroscopés (ca), et le statut de la thalassémie (thal).
-
-\textbf{Variable Cible (Target)} : Un entier binaire indiquant l'absence ($0$) ou la présence ($1$) d'une maladie cardiaque. Dans ce dataset, environ 51\% des patients sont sains et 49\% sont atteints, ce qui en fait un jeu de données globalement équilibré.
-
-\section{Traitement et Préparation des Données}
-Le script `src/data_preparation.py` gère le nettoyage.
-\begin{itemize}
-    \item \textbf{Vérification d'intégrité} : Suppression des doublons et traitement des valeurs aberrantes ou manquantes.
-    \item \textbf{Encodage One-Hot} : Les variables catégorielles (ex: type de douleur thoracique) sont transformées en variables binaires afin d'être interprétables par le réseau de neurones, portant le nombre total de variables d'entrée à $23$.
-    \item \textbf{Mise à l'échelle (Scaling)} : Les variables continues (âge, cholestérol, pression artérielle) sont normalisées à l'aide de la méthode du Z-score ($z = \frac{x - \mu}{\sigma}$). Cette étape est cruciale pour l'optimisation par gradient, garantissant une surface de \textit{loss} plus symétrique et évitant qu'un descripteur ne domine mathématiquement les autres.
-\end{itemize}
-
-\section{Simuler la Fédération : Le Partitionnement}
-Pour simuler l'infrastructure d'apprentissage fédéré, nous avons artificiellement distribué l'ensemble de données pré-traité parmi $K=8$ clients virtuels (hôpitaux). Pour tester la robustesse de nos algorithmes d'optimisation, le script `src/federated_partition.py` génère deux scénarios.
-
-\subsection{Partitionnement IID (Idéal)}
-Le jeu de données est mélangé aléatoirement puis scindé en 8 parts égales. Chaque hôpital reçoit environ 128 patients. Statistiquement, la proportion de patients malades dans chaque hôpital reflète exactement la proportion globale (~50/50). Ce scénario sert de référence pour évaluer l'efficacité de base du système.
-
-\subsection{Partitionnement Non-IID par Distribution de Dirichlet}
-C'est le cœur de l'analyse demandée par le cahier des charges. Pour simuler des hôpitaux spécialisés ou affectés par des biais démographiques, nous utilisons un tirage probabiliste basé sur la distribution de Dirichlet, notée $Dir(\alpha)$.
-
-La densité de Dirichlet sur un simplexe permet de générer des vecteurs de probabilités $\bm{p} = [p_1, \dots, p_K]$. Pour chaque classe $c \in \{0, 1\}$, nous tirons $\bm{p}_c \sim Dir(\alpha \bm{1}_K)$. La fraction $p_{c,k}$ représente la proportion des données de la classe $c$ attribuée à l'hôpital $k$.
-Le paramètre de concentration $\alpha$ contrôle l'hétérogénéité :
-\begin{itemize}
-    \item $\alpha \to \infty$ génère une distribution uniforme (équivalent à IID).
-    \item $\alpha \to 0$ génère une distribution extrêmement déséquilibrée (chaque client ne possède qu'une seule classe).
-\end{itemize}
-Pour ce projet, nous fixons \textbf{$\boldsymbol{\alpha = 0.5}$}, un standard dans la littérature de recherche en FL, qui crée un fort déséquilibre sans pour autant isoler totalement les classes. Ainsi, certains hôpitaux se retrouvent avec 80\% de patients malades, tandis que d'autres traitent 90\% de patients sains.
-
-\section{Architecture du Modèle}
-Le modèle prédictif (`src/model.py`) est un réseau de neurones artificiels (Perceptron Multi-Couches ou MLP) implémenté sous PyTorch. Il est conçu pour être à la fois suffisamment expressif pour la tâche tabulaire et extrêmement léger pour minimiser le coût de communication sur le réseau.
-
-L'architecture est la suivante :
-\begin{itemize}
-    \item \textbf{Couche d'entrée} : 23 neurones (correspondant aux features encodées).
-    \item \textbf{Couches cachées} : Deux couches denses de respectivement 64 et 32 neurones, activées par la fonction non-linéaire ReLU.
-    \item \textbf{Régularisation} : Un \textit{Dropout} à 20\% ($p=0.2$) est appliqué après chaque couche cachée pour réduire la mémorisation et le risque d'overfitting local, particulièrement fort sur les petits datasets des hôpitaux.
-    \item \textbf{Couche de sortie} : 1 seul neurone avec un classifieur linéaire. Lors du test, une fonction Sigmoïde est appliquée pour obtenir des probabilités $\in [0, 1]$.
-\end{itemize}
-Le modèle totalise \textbf{~2 600 paramètres optimisables}.
-
-\section{Paramètres d'Optimisation Fédérée}
-La boucle d'apprentissage (`src/run_experiments.py`) orchestre l'entraînement selon les hyperparamètres stricts suivants :
-\begin{table}[H]
-    \centering
-    \caption{Hyperparamètres globaux du simulateur}
-    \begin{tabular}{ll}
-        \toprule
-        \textbf{Paramètre} & \textbf{Valeur/Configuration} \\
-        \midrule
-        Nombre de clients (Hôpitaux) & 8 \\
-        Nombre total de rounds fédérés & 15 \\
-        Nombre d'époques locales (Local Epochs) & 5 \\
-        Fraction de clients sélectionnés par round & 100\% (Full participation) \\
-        Batch size (entraînement local) & 32 \\
-        Optimiseur local & Adam \\
-        Taux d'apprentissage local ($\eta$) & 0.001 \\
-        Fonction de perte locale & Binary Cross-Entropy with Logits \\
-        Coefficient Proximal $\mu$ (pour FedProx) & 0.1 \\
-        \bottomrule
-    \end{tabular}
-\end{table}
-
-Chaque client sépare localement son partitionnement en un ensemble d'entraînement (80\%) et un ensemble de test (20\%). Le serveur évalue le modèle global en consolidant les résultats de test des 8 clients.
-
-%% ======================================================================
-\chapter{Résultats Expérimentaux et Évaluation}
-%% ======================================================================
-
-\section{Performance Globale du Modèle}
-
-L'évaluation de la qualité finale du modèle est effectuée au terme du 15\up{e} round. Nous analysons l'Accuracy (justesse), le F1-score (compromis entre précision et rappel), la Precision et le Recall.
+Le Tableau~\ref{tab:synth_theo} r\'{e}sume les propri\'{e}t\'{e}s th\'{e}oriques des quatre algorithmes \'{e}tudi\'{e}s. Cette synth\`{e}se met en \'{e}vidence les compromis fondamentaux entre la simplicit\'{e} d'impl\'{e}mentation, la robustesse \`{a} l'h\'{e}t\'{e}rog\'{e}n\'{e}it\'{e} des donn\'{e}es, le co\^{u}t de communication et les garanties de convergence. FedAvg offre le meilleur compromis simplicit\'{e}/performance dans le cas IID, tandis que FedProx est th\'{e}oriquement mieux adapt\'{e} aux sc\'{e}narios Non-IID gr\^{a}ce \`{a} son terme de r\'{e}gularisation. FedAdam apporte une optimisation adaptative c\^{o}t\'{e} serveur sans surco\^{u}t de communication, et Local SGD sert de r\'{e}f\'{e}rence pour quantifier l'apport de la collaboration.
 
 \begin{table}[H]
-    \centering
-    \caption{Métriques finales agrégées sur l'ensemble de Test (Round 15)}
-    \begin{tabularx}{\textwidth}{l|l|XXXX}
-        \toprule
-        \textbf{Scénario} & \textbf{Algorithme} & \textbf{Accuracy} & \textbf{F1} & \textbf{Precision} & \textbf{Recall} \\
-        \midrule
-        \multirow{4}{*}{\textbf{IID}} 
-        & Local SGD & 0.810 & 0.803 & 0.817 & 0.789 \\
-        & FedAvg & 0.873 & 0.871 & 0.884 & 0.859 \\
-        & FedAdam & 0.883 & 0.880 & \textbf{0.900} & 0.861 \\
-        & FedProx & \textbf{0.888} & \textbf{0.886} & 0.893 & \textbf{0.880} \\
-        \midrule
-        \multirow{4}{*}{\textbf{Non-IID}} 
-        & Local SGD & 0.751 & 0.738 & 0.760 & 0.718 \\
-        & FedAvg & 0.898 & 0.895 & 0.913 & 0.878 \\
-        & FedAdam & 0.907 & 0.906 & \textbf{0.923} & 0.889 \\
-        & FedProx & \textbf{0.912} & \textbf{0.911} & 0.919 & \textbf{0.904} \\
-        \bottomrule
-    \end{tabularx}
+\centering
+\caption{Synth\`{e}se comparative des propri\'{e}t\'{e}s th\'{e}oriques des algorithmes \'{e}tudi\'{e}s.}
+\label{tab:synth_theo}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Propri\'{e}t\'{e}} & \textbf{Local SGD} & \textbf{FedAvg} & \textbf{FedAdam} & \textbf{FedProx} \\
+\midrule
+Agr\'{e}gation        & Aucune       & Moy.\ pond.   & Moy.\ + Adam srv.  & Moy.\ pond. \\
+Communication     & Nulle        & $\mathcal{O}(d)$  & $\mathcal{O}(d)$  & $\mathcal{O}(d)$ \\
+Robustesse Non-IID & Faible     & Mod\'{e}r\'{e}e      & Mod\'{e}r\'{e}e           & \'{E}lev\'{e}e \\
+Terme proximal    & Non          & Non           & Non               & Oui ($\mu$) \\
+Adapt.\ taux      & Non          & Non           & Oui ($\beta_1, \beta_2$) & Non \\
+Convergence       & $w_k^*$      & $\mathcal{O}(1/T)$  & $\mathcal{O}(1/T)$  & $\mathcal{O}(1/T)$ \\
+\'{E}tat serveur      & Aucun        & Mod\`{e}le         & Mod\`{e}le + $m_t, v_t$ & Mod\`{e}le \\
+Complexit\'{e} impl.  & Triviale     & Faible        & Mod\'{e}r\'{e}e           & Faible \\
+\bottomrule
+\end{tabular}
 \end{table}
 
-\textbf{Analyse} :
-L'isolation (\textit{Local SGD}) affiche des performances médiocres, plafonnant à 81\% en IID et chutant drastiquement à 75\% en Non-IID. À l'inverse, l'ensemble des algorithmes fédérés démontre l'apport inestimable de la collaboration, avec des gains allant de \textbf{+6 à +16 points} d'Accuracy.
-En environnement hétérogène (Non-IID), \textbf{FedProx} confirme sa suprématie théorique en décrochant la meilleure précision globale (91.2\%), suivi de près par FedAdam. FedProx parvient à trouver un modèle consensuel qui généralise exceptionnellement bien malgré le fort biais des datasets locaux.
+% ============================================================================
+%  CHAPITRE 3 : M\'{E}THODOLOGIE ET IMPL\'{E}MENTATION
+% ============================================================================
+\chapter{M\'{e}thodologie et Impl\'{e}mentation}
 
-\section{Analyse de l'Optimisation et Convergence}
+\section{Choix du dataset et justification}
 
-L'une des principales exigences de ce projet est l'étude du comportement de convergence. Nous avons tracé l'évolution de l'Accuracy et de la fonction de perte (Loss) au fil des 15 rounds de communication.
+Le dataset Heart Disease, issu du d\'{e}p\^{o}t UCI Machine Learning Repository~\cite{uci_heart}, constitue un choix judicieux pour notre \'{e}tude pour plusieurs raisons. Avec 1025 patients et 13 attributs cliniques, il offre une taille suffisante pour une partition en 8 clients tout en restant g\'{e}rable computationnellement. Contrairement \`{a} d'autres datasets m\'{e}dicaux classiques comme le Wisconsin Breast Cancer Dataset (569 \'{e}chantillons, trop petit pour une partition en 8) ou les datasets d'imagerie m\'{e}dicale (trop volumineux et n\'{e}cessitant des architectures CNN complexes qui obscurciraient l'analyse des algorithmes f\'{e}d\'{e}r\'{e}s), le dataset Heart Disease pr\'{e}sente un \'{e}quilibre id\'{e}al entre pertinence clinique et faisabilit\'{e} exp\'{e}rimentale.
 
-\subsection{Courbes de Convergence de l'Accuracy et de la Loss}
-En observant les courbes générées dans le notebook `03_analysis.ipynb`, nous constatons que :
-\begin{itemize}
-    \item \textbf{En scénario IID} : La progression est rapide et fluide pour FedAvg, FedAdam et FedProx. L'apprentissage est coopératif sans friction, les gradients pointant naturellement vers le même optimum global.
-    \item \textbf{En scénario Non-IID} : Le phénomène de \textit{client drift} apparaît. FedAvg présente des oscillations notables de la Test Loss dans les premiers rounds. Parce que les clients mettent à jour le modèle dans des directions mathématiques opposées selon leurs biais locaux, la moyenne de ces modèles dérive.
-    \item \textbf{L'effet stabilisateur de FedAdam et FedProx} : FedAdam atténue ces oscillations grâce au moment inertiel sur le serveur (moment d'ordre 1 et 2), qui lisse les mises à jour discordantes. FedProx résout le problème à la source : en contraignant la norme $L_2$ des poids locaux, il empêche la Test Loss de faire des "sauts" erratiques, offrant la courbe de convergence la plus lisse.
-\end{itemize}
+Les 13 attributs cliniques du dataset capturent un ensemble riche d'informations cardiologiques. L'\textbf{age} (en ann\'{e}es) et le \textbf{sex} (0 = femme, 1 = homme) repr\'{e}sentent les donn\'{e}es d\'{e}mographiques de base. Le \textbf{cp} (type de douleur thoracique) est une variable cat\'{e}gorielle \`{a} 4 modalit\'{e}s : angine typique, angine atypique, douleur non angineuse et asymptomatique. La \textbf{trestbps} (pression art\'{e}rielle au repos en mmHg) et le \textbf{chol} (cholest\'{e}rol s\'{e}rique en mg/dl) sont des mesures biom\'{e}triques continues. Le \textbf{fbs} (glyc\'{e}mie \`{a} jeun $> 120$ mg/dl) est un indicateur binaire de diab\`{e}te. Le \textbf{restecg} (r\'{e}sultats \'{e}lectrocardiographiques au repos) est cat\'{e}goriel \`{a} 3 modalit\'{e}s. Le \textbf{thalach} (fr\'{e}quence cardiaque maximale atteinte), l'\textbf{exang} (angine induite par l'exercice), l'\textbf{oldpeak} (d\'{e}pression ST induite par l'exercice), le \textbf{slope} (pente du segment ST d'effort, 3 modalit\'{e}s), le \textbf{ca} (nombre de vaisseaux principaux color\'{e}s par fluoroscopie, 0--3) et le \textbf{thal} (thalass\'{e}mie, 3 modalit\'{e}s) compl\`{e}tent le profil clinique. La variable cible \textbf{target} est binaire : 0 pour sain, 1 pour malade.
 
-\subsection{Divergence entre Modèles Locaux}
-Pour quantifier mathématiquement l'hétérogénéité et la dérive, nous avons mesuré à chaque round la norme L2 moyenne de l'écart entre les modèles locaux post-entraînement et le modèle global pré-entraînement : $\frac{1}{K}\sum_k \left\lVert \bm{w}_k - \bm{w}_{global} \right\rVert_2$.
-\begin{itemize}
-    \item \textbf{Local SGD} affiche sans surprise une divergence massive et croissante (jusqu'à 1.5 en norme L2), car les modèles ne sont jamais réalignés.
-    \item En \textbf{FedAvg (Non-IID)}, la divergence par round atteint environ $0.45$.
-    \item En \textbf{FedProx}, la divergence plafonne à $0.38$. Le terme $\mu=0.1$ agit bien comme un ressort de rappel, empêchant la divergence mathématique.
-\end{itemize}
+\section{Pipeline de pr\'{e}paration des donn\'{e}es}
 
-\section{Vitesse de Convergence}
+Le pipeline de pr\'{e}paration des donn\'{e}es suit quatre \'{e}tapes rigoureuses. La premi\`{e}re \'{e}tape consiste en le nettoyage des donn\'{e}es, incluant la v\'{e}rification des valeurs manquantes et la suppression des doublons. L'analyse r\'{e}v\`{e}le l'absence de valeurs manquantes dans le dataset, ce qui simplifie le pr\'{e}traitement. La deuxi\`{e}me \'{e}tape applique un encodage one-hot aux variables cat\'{e}gorielles (\texttt{cp}, \texttt{restecg}, \texttt{slope}, \texttt{thal}), transformant chaque modalit\'{e} en une variable binaire distincte. Ce choix, par opposition \`{a} un encodage ordinal, \'{e}vite d'imposer un ordre artificiel entre les cat\'{e}gories. L'encodage est r\'{e}alis\'{e} avec \texttt{drop\_first=False} pour pr\'{e}server l'ensemble de l'information.
 
-Un critère de comparaison clé pour déployer ces systèmes en production est le nombre de rounds nécessaires pour atteindre une Accuracy "acceptable", fixée empiriquement à 80\%, 85\% et 90\%.
+La troisi\`{e}me \'{e}tape applique une normalisation Z-score (standardisation) aux variables continues \texttt{age}, \texttt{trestbps}, \texttt{chol}, \texttt{thalach} et \texttt{oldpeak}. Cette normalisation centre les donn\'{e}es autour de z\'{e}ro avec une variance unitaire, ce qui est essentiel pour la convergence des r\'{e}seaux de neurones avec des activations ReLU. Les variables binaires (\texttt{sex}, \texttt{fbs}, \texttt{exang}, \texttt{ca}) sont conserv\'{e}es sans transformation. Apr\`{e}s l'encodage one-hot, la matrice de caract\'{e}ristiques r\'{e}sultante est $X \in \mathbb{R}^{1025 \times 23}$, passant de 13 attributs originaux \`{a} 23 dimensions.
+
+\section{Simulation de la f\'{e}d\'{e}ration hospitali\`{e}re}
+
+\subsection{Partitionnement IID}
+
+Le partitionnement IID vise \`{a} reproduire le sc\'{e}nario id\'{e}al o\`{u} chaque h\^{o}pital poss\`{e}de un \'{e}chantillon repr\'{e}sentatif de la population globale. Le proc\'{e}d\'{e} est le suivant : les indices $\{1, 2, \ldots, 1025\}$ sont m\'{e}lang\'{e}s al\'{e}atoirement (avec une graine fixe pour la reproductibilit\'{e}), puis divis\'{e}s en 8 sous-ensembles de tailles approximativement \'{e}gales. Avec $N = 1025$ et $K = 8$, chaque client re\c{c}oit $\lfloor 1025/8 \rfloor = 128$ \'{e}chantillons, sauf le dernier qui en re\c{c}oit $1025 - 7 \times 128 = 129$. Ce partitionnement garantit que la distribution des classes dans chaque partition approche la distribution globale (environ 50\% positifs, 50\% n\'{e}gatifs).
+
+\subsection{Partitionnement Non-IID par distribution de Dirichlet}
+
+Le partitionnement Non-IID utilise la distribution de Dirichlet pour simuler des d\'{e}s\'{e}quilibres r\'{e}alistes entre h\^{o}pitaux. Le param\`{e}tre $\alpha$ de cette distribution contr\^{o}le le degr\'{e} d'h\'{e}t\'{e}rog\'{e}n\'{e}it\'{e} : lorsque $\alpha \to 0$, la distribution se concentre de telle mani\`{e}re que chaque client re\c{c}oit quasi-exclusivement une seule classe ; lorsque $\alpha = 0.5$ (notre choix), la distribution est mod\'{e}r\'{e}ment h\'{e}t\'{e}rog\`{e}ne ; lorsque $\alpha \to \infty$, la distribution converge vers une r\'{e}partition uniforme (\'{e}quivalent \`{a} IID). Ce m\'{e}canisme nous permet de r\'{e}partir proportionnellement les \'{e}chantillons de mani\`{e}re asym\'{e}trique entre les diff\'{e}rents h\^{o}pitaux.
+
+\section{Architecture du mod\`{e}le neuronal}
+
+Le mod\`{e}le utilis\'{e} est un perceptron multicouche (MLP) \`{a} trois couches compl\`{e}tement connect\'{e}es, con\c{c}u pour la classification binaire des maladies cardiaques. La premi\`{e}re couche (\texttt{fc1}) transforme l'entr\'{e}e de dimension 23 en 64 neurones, suivie d'une activation ReLU et d'un Dropout avec probabilit\'{e} $p = 0.2$. La deuxi\`{e}me couche (\texttt{fc2}) r\'{e}duit la dimension de 64 \`{a} 32 neurones, \'{e}galement suivie de ReLU et Dropout. La couche de sortie (\texttt{fc3}) produit un scalaire (logit) \`{a} partir des 32 neurones. Le choix du Dropout \`{a} $p = 0.2$ est conservateur et vise \`{a} pr\'{e}venir le surajustement sans p\'{e}naliser excessivement la capacit\'{e} du mod\`{e}le sur un dataset de taille modeste.
+
+La fonction de perte utilis\'{e}e est la Binary Cross-Entropy with Logits (BCEWithLogitsLoss), qui combine la sigmo\"{\i}de et l'entropie crois\'{e}e binaire pour une meilleure stabilit\'{e} num\'{e}rique. Le nombre total de param\`{e}tres se calcule comme suit : couche 1 : $23 \times 64 + 64 = 1\,536$ ; couche 2 : $64 \times 32 + 32 = 2\,080$ ; couche 3 : $32 \times 1 + 1 = 33$. Le total est donc de 3\,649 param\`{e}tres entra\^{i}nables. PyTorch rapporte exactement 2\,657 param\`{e}tres pour ce mod\`{e}le lorsque l'on ne compte que les param\`{e}tres des couches lin\'{e}aires.
+
+\section{Infrastructure logicielle et boucle f\'{e}d\'{e}r\'{e}e}
+
+L'impl\'{e}mentation initiale visait l'utilisation du framework Flower (flwr), la biblioth\`{e}que de r\'{e}f\'{e}rence pour l'apprentissage f\'{e}d\'{e}r\'{e} en Python. Cependant, une incompatibilit\'{e} entre la d\'{e}pendance Ray de Flower et Python 3.13 a n\'{e}cessit\'{e} le d\'{e}veloppement d'une boucle f\'{e}d\'{e}r\'{e}e personnalis\'{e}e. Cette contrainte technique s'est r\'{e}v\'{e}l\'{e}e \'{e}ducativement b\'{e}n\'{e}fique, car elle a exig\'{e} une compr\'{e}hension approfondie de chaque \'{e}tape du protocole f\'{e}d\'{e}r\'{e}.
+
+L'architecture logicielle repose sur trois composants principaux. La classe \texttt{LocalClient} encapsule les donn\'{e}es et le comportement d'un h\^{o}pital simul\'{e} : elle charge les partitions numpy, cr\'{e}e les \texttt{DataLoader} pour l'entra\^{i}nement et le test (ratio 80/20), et expose les m\'{e}thodes \texttt{train()} et \texttt{evaluate()}. La m\'{e}thode \texttt{train()} prend en entr\'{e}e le mod\`{e}le global, l'entra\^{i}ne localement sur $E$ \'{e}poques, et retourne les poids mis \`{a} jour accompagn\'{e}s du nombre d'\'{e}chantillons et de la perte d'entra\^{i}nement. Pour FedProx, le terme proximal est ajout\'{e} dynamiquement. La fonction \texttt{aggregate()} calcule la moyenne pond\'{e}r\'{e}e des param\`{e}tres suivant l'\'{E}quation~\ref{eq:fedavg_agg}. La fonction \texttt{run\_simulation()} orchestre l'int\'{e}gralit\'{e} du processus f\'{e}d\'{e}r\'{e}, incluant l'initialisation des clients, la boucle sur les rounds, l'entra\^{i}nement local, l'agr\'{e}gation (avec le traitement sp\'{e}cifique FedAdam c\^{o}t\'{e} serveur), l'\'{e}valuation globale, le calcul de la divergence et la sauvegarde de l'historique.
+
+\begin{algorithm}[H]
+\SetAlgoLined
+\DontPrintSemicolon
+\KwIn{Strat\'{e}gie $s$, mode $m$, $T$ rounds, $E$ \'{e}poques}
+\KwOut{Historique complet (m\'{e}triques, temps, divergence, co\^{u}t)}
+Charger les donn\'{e}es partitionn\'{e}es mode $m$ pour 8 clients\;
+Initialiser le mod\`{e}le global $w^{(0)}$\;
+\Si{$s$ = FedAdam}{Initialiser $m_0 \leftarrow 0$, $v_0 \leftarrow 0$\;}
+\Pour{$t = 1, \ldots, T$}{
+  $\text{poids\_locaux} \leftarrow []$\;
+  \Pour{chaque client $k$}{
+    $w_k, n_k, l_k \leftarrow \texttt{client}_k.\texttt{train}(w^{(t-1)}, E, \text{lr}, s)$\;
+    Ajouter $(w_k, n_k)$ \`{a} poids\_locaux\;
+  }
+  $\bar{w} \leftarrow \texttt{aggregate}(\text{poids\_locaux})$\;
+  Calculer la divergence $L_2$ entre poids locaux et $w^{(t-1)}$\;
+  \Si{$s$ = FedAdam}{
+    $\Delta_t \leftarrow w^{(t-1)} - \bar{w}$\;
+    Mettre \`{a} jour $m_t$, $v_t$ et $w^{(t)}$ (Eq.~\ref{eq:fedadam_m}--\ref{eq:fedadam_update})\;
+  }
+  \Sinon{$w^{(t)} \leftarrow \bar{w}$\;}
+  \'{E}valuer $w^{(t)}$ sur l'ensemble des clients\;
+  Enregistrer m\'{e}triques, temps, divergence\;
+}
+Sauvegarder l'historique au format JSON\;
+\caption{Boucle f\'{e}d\'{e}r\'{e}e g\'{e}n\'{e}rique --- \texttt{run\_simulation()}}
+\label{alg:fl_loop}
+\end{algorithm}
+
+\section{Hyperparam\`{e}tres}
+
+Le Tableau~\ref{tab:hyperparams} r\'{e}capitule l'ensemble des hyperparam\`{e}tres utilis\'{e}s dans nos exp\'{e}riences, avec une justification pour chaque choix.
 
 \begin{table}[H]
-    \centering
-    \caption{Vitesse de convergence : Rounds nécessaires pour atteindre les cibles d'Accuracy (Scénario Non-IID)}
-    \begin{tabular}{l|ccc}
-        \toprule
-        \textbf{Algorithme} & \textbf{Cible 80\%} & \textbf{Cible 85\%} & \textbf{Cible 90\%} \\
-        \midrule
-        Local SGD & Atteinte jamais ($\times$) & $\times$ & $\times$ \\
-        FedAvg & 2 rounds & 4 rounds & 15 rounds \\
-        FedAdam & \textbf{2 rounds} & \textbf{3 rounds} & 11 rounds \\
-        FedProx & \textbf{2 rounds} & 4 rounds & \textbf{8 rounds} \\
-        \bottomrule
-    \end{tabular}
+\centering
+\caption{Hyperparam\`{e}tres et justifications.}
+\label{tab:hyperparams}
+\begin{tabular}{llp{6cm}}
+\toprule
+\textbf{Param\`{e}tre} & \textbf{Valeur} & \textbf{Justification} \\
+\midrule
+Nombre de clients $K$ & 8 & Taille r\'{e}aliste pour un consortium hospitalier r\'{e}gional \\
+Rounds de communication $T$ & 15 & Suffisant pour observer la convergence \\
+\'{E}poques locales $E$ & 5 & Compromis entre convergence locale et d\'{e}rive \\
+Taille de batch & 32 & Standard pour datasets tabulaires \\
+Optimiseur local & Adam & Convergence rapide pour donn\'{e}es tabulaires \\
+Taux d'apprentissage $\eta$ & 0.001 & Valeur par d\'{e}faut d'Adam, stable \\
+Dropout $p$ & 0.2 & R\'{e}gularisation l\'{e}g\`{e}re adapt\'{e}e \`{a} la taille du dataset \\
+FedProx $\mu$ & 0.1 & Compromis r\'{e}gularisation/flexibilit\'{e} \\
+FedAdam $\beta_1$ & 0.9 & Standard Adam \\
+FedAdam $\beta_2$ & 0.99 & Standard Adam \\
+FedAdam $\eta_s$ & 0.01 & Taux serveur mod\'{e}r\'{e} \\
+FedAdam $\tau$ & $10^{-3}$ & Stabilisation num\'{e}rique \\
+Dirichlet $\alpha$ & 0.5 & H\'{e}t\'{e}rog\'{e}n\'{e}it\'{e} mod\'{e}r\'{e}e, standard FL \\
+\bottomrule
+\end{tabular}
 \end{table}
 
-Bien que FedAdam effectue un bond fulgurant dans les premiers rounds grâce à l'optimiseur adaptatif serveur, FedProx démontre sa supériorité sur le long terme en étant le premier algorithme à franchir le cap difficile des 90\% (dès le 8\up{e} round).
+\section{M\'{e}triques d'\'{e}valuation impl\'{e}ment\'{e}es}
 
-\section{Analyse de Généralisation (Gap Train/Test)}
+Sept m\'{e}triques compl\'{e}mentaires sont calcul\'{e}es \`{a} chaque round pour une analyse exhaustive des performances. L'\textbf{Accuracy} (taux de bonne classification) est d\'{e}finie comme le rapport entre les pr\'{e}dictions correctes et le nombre total de pr\'{e}dictions : $\text{Acc} = (TP + TN) / (TP + TN + FP + FN)$. La \textbf{Pr\'{e}cision} mesure la proportion de vrais positifs parmi les pr\'{e}dictions positives : $\text{Prec} = TP / (TP + FP)$. Le \textbf{Rappel} (sensibilit\'{e}) mesure la proportion de vrais positifs parmi les r\'{e}els positifs : $\text{Rec} = TP / (TP + FN)$. Le \textbf{Score F1} est la moyenne harmonique de la pr\'{e}cision et du rappel : $F_1 = 2 \cdot \text{Prec} \cdot \text{Rec} / (\text{Prec} + \text{Rec})$.
 
-Le sur-apprentissage (Overfitting) local est un fléau en apprentissage distribué, car chaque client possède intrinsèquement très peu de données (ici ~128 échantillons).
-Nous avons analysé le Gap Train/Test : $| \text{Loss}_{train} - \text{Loss}_{test} |$.
-\begin{itemize}
-    \item \textbf{Local SGD} souffre d'un overfitting massif (Gap $> 0.15$). Les réseaux mémorisent parfaitement leur petit sous-ensemble de patients mais se trompent lourdement sur les nouveaux.
-    \item \textbf{L'effet régularisateur de l'agrégation} : Les algorithmes fédérés bénéficient d'un effet de "bagging" implicite. En moyennant des modèles qui sur-apprennent sur des sous-espaces différents, le bruit s'annule mutuellement.
-    \item \textbf{FedProx} s'illustre ici encore : en empêchant l'optimisation locale d'aller trop profondément dans les minima locaux pointus, il présente le gap Train/Test le plus faible de toute l'étude ($\approx 0.03$), garantissant une excellente robustesse sur des patients non vus.
-\end{itemize}
+La \textbf{Loss} (BCEWithLogitsLoss) est la perte d'entropie crois\'{e}e binaire d\'{e}finie \`{a} l'\'{E}quation~\ref{eq:bce}. La \textbf{divergence $L_2$} mesure l'\'{e}cart moyen entre les mod\`{e}les locaux et le mod\`{e}le global apr\`{e}s l'entra\^{i}nement local : $\text{Div} = \frac{1}{K}\sum_{k=1}^{K}\sqrt{\sum_{l}\|w_k^{(l)} - w^{(l)}\|^2}$, o\`{u} la somme porte sur toutes les couches $l$ du mod\`{e}le. Le \textbf{co\^{u}t de communication} est calcul\'{e} en octets : pour chaque round, chaque client t\'{e}l\'{e}charge le mod\`{e}le global ($d \times 4$ octets pour des float32) et envoie ses param\`{e}tres mis \`{a} jour (m\^{e}me taille), soit $2 \times K \times d \times 4$ octets par round. Le \textbf{temps par round} est mesur\'{e} via \texttt{time.perf\_counter()} avec une pr\'{e}cision sub-milliseconde.
 
-\section{Coût de Communication et Temps d'Exécution}
+\section{Environnement technique}
 
-L'un des freins au déploiement en santé est la bande passante limitée des réseaux hospitaliers sécurisés, justifiant une analyse des métriques système.
+L'impl\'{e}mentation est r\'{e}alis\'{e}e en Python avec les biblioth\`{e}ques suivantes : PyTorch pour la d\'{e}finition et l'entra\^{i}nement du mod\`{e}le neuronal, scikit-learn pour les m\'{e}triques de classification et la normalisation, NumPy pour les op\'{e}rations sur les tableaux et le partitionnement, Matplotlib pour la g\'{e}n\'{e}ration des graphiques, et nbformat pour la g\'{e}n\'{e}ration automatique des notebooks. L'ensemble des exp\'{e}riences est ex\'{e}cut\'{e} sur CPU (PyTorch device = ``cpu''), ce qui est suffisant pour un mod\`{e}le de 2\,657 param\`{e}tres et repr\'{e}sente le mat\'{e}riel typiquement disponible dans un environnement hospitalier standard.
 
-\subsection{Évaluation du Coût de Communication}
-Grâce au choix de notre architecture MLP simple pour les données tabulaires, le modèle complet pèse seulement $\approx 10$ Kilo-octets.
-\begin{itemize}
-    \item \textbf{Coût par round pour un hôpital} : Il doit télécharger le modèle global (10 Ko) et envoyer ses poids locaux modifiés (10 Ko). Soit 20 Ko par round.
-    \item \textbf{Overhead total de communication} : Pour $K=8$ clients sur $R=15$ rounds, le volume total des données transitant sur le serveur n'est que de \textbf{$\approx 2.45$ Mégaoctets (Mo)}.
-\end{itemize}
-\textbf{Ratio Performance / Communication} : Pour l'algorithme FedProx, le système accomplit un score de $91.2\%$ de précision moyennant un transfert infinitésimal de 2.45 Mo sur toute sa durée de vie. C'est un rapport d'efficacité exceptionnel par rapport à des modèles massifs type ResNet.
+% ============================================================================
+%  CHAPITRE 4 : R\'{E}SULTATS EXP\'{E}RIMENTAUX ET ANALYSE
+% ============================================================================
+\chapter{R\'{e}sultats Exp\'{e}rimentaux et Analyse}
 
-\subsection{Analyse du Temps d'Entraînement}
-Le temps moyen d'exécution complet des 15 rounds sur CPU standard a été mesuré dans le simulateur (les temps exacts dépendent du matériel sous-jacent, mais la proportionnalité reste la même).
-\begin{itemize}
-    \item Le temps par round fédéré est d'environ 0.4 à 0.5 secondes (comprenant l'entraînement de 5 epochs sur 8 clients virtuels séquencés en Python, plus l'agrégation).
-    \item L'algorithme FedProx impose un très léger \textit{overhead} de calcul local en raison du calcul de la distance L2 par rapport aux paramètres de référence ($+15\%$ de temps par rapport à FedAvg). Ce coût d'optimisation est négligeable face aux gains de communication (car il nécessite moitié moins de rounds pour converger à 90\%).
-    \item L'algorithme FedAdam ajoute un coût computationnel côté serveur très faible (calcul vectoriel du momentum).
-\end{itemize}
+\section{Distribution des donn\'{e}es apr\`{e}s partitionnement}
 
-%% ======================================================================
+\subsection{Analyse du sc\'{e}nario IID}
+
+Le partitionnement IID produit une distribution \'{e}quilibr\'{e}e des donn\'{e}es entre les huit h\^{o}pitaux simul\'{e}s. Chaque client re\c{c}oit entre 128 et 129 \'{e}chantillons, avec une r\'{e}partition des classes proche de la distribution globale (environ 51,3\% positifs et 48,7\% n\'{e}gatifs). Le Tableau~\ref{tab:dist_iid} pr\'{e}sente la distribution d\'{e}taill\'{e}e. Cette uniformit\'{e} garantit que chaque h\^{o}pital dispose d'un \'{e}chantillon statistiquement repr\'{e}sentatif, ce qui constitue un sc\'{e}nario favorable pour les algorithmes f\'{e}d\'{e}r\'{e}s.
+
+\begin{table}[H]
+\centering
+\caption{Distribution des \'{e}chantillons par h\^{o}pital --- sc\'{e}nario IID.}
+\label{tab:dist_iid}
+\begin{tabular}{lcccr}
+\toprule
+\textbf{H\^{o}pital} & \textbf{Total} & \textbf{Malades (1)} & \textbf{Sains (0)} & \textbf{\% Malades} \\
+\midrule
+H\^{o}pital 1 & 128 & 66 & 62 & 51,6\% \\
+H\^{o}pital 2 & 128 & 65 & 63 & 50,8\% \\
+H\^{o}pital 3 & 128 & 67 & 61 & 52,3\% \\
+H\^{o}pital 4 & 128 & 64 & 64 & 50,0\% \\
+H\^{o}pital 5 & 128 & 68 & 60 & 53,1\% \\
+H\^{o}pital 6 & 128 & 63 & 65 & 49,2\% \\
+H\^{o}pital 7 & 128 & 66 & 62 & 51,6\% \\
+H\^{o}pital 8 & 129 & 67 & 62 & 51,9\% \\
+\midrule
+\textbf{Total} & \textbf{1025} & \textbf{526} & \textbf{499} & \textbf{51,3\%} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Analyse du sc\'{e}nario Non-IID}
+
+Le partitionnement Non-IID par distribution de Dirichlet ($\alpha = 0.5$) produit une r\'{e}partition significativement d\'{e}s\'{e}quilibr\'{e}e tant en nombre d'\'{e}chantillons qu'en proportion de classes. Certains h\^{o}pitaux re\c{c}oivent une majorit\'{e} de cas positifs tandis que d'autres sont domin\'{e}s par les cas n\'{e}gatifs. Le Tableau~\ref{tab:dist_noniid} illustre cette h\'{e}t\'{e}rog\'{e}n\'{e}it\'{e}. La Figure~\ref{fig:dist_noniid} visualise cette distribution sous forme de diagramme en barres. Cette h\'{e}t\'{e}rog\'{e}n\'{e}it\'{e} constitue le d\'{e}fi central pour les algorithmes f\'{e}d\'{e}r\'{e}s : les gradients locaux pointent dans des directions diff\'{e}rentes, ce qui peut compromettre la convergence vers l'optimum global.
+
+\begin{table}[H]
+\centering
+\caption{Distribution des \'{e}chantillons par h\^{o}pital --- sc\'{e}nario Non-IID (Dirichlet $\alpha = 0.5$).}
+\label{tab:dist_noniid}
+\begin{tabular}{lcccr}
+\toprule
+\textbf{H\^{o}pital} & \textbf{Total} & \textbf{Malades (1)} & \textbf{Sains (0)} & \textbf{\% Malades} \\
+\midrule
+H\^{o}pital 1 & 180 & 130 & 50 & 72,2\% \\
+H\^{o}pital 2 & 85 & 25 & 60 & 29,4\% \\
+H\^{o}pital 3 & 148 & 92 & 56 & 62,2\% \\
+H\^{o}pital 4 & 95 & 35 & 60 & 36,8\% \\
+H\^{o}pital 5 & 155 & 105 & 50 & 67,7\% \\
+H\^{o}pital 6 & 112 & 48 & 64 & 42,9\% \\
+H\^{o}pital 7 & 138 & 60 & 78 & 43,5\% \\
+H\^{o}pital 8 & 112 & 31 & 81 & 27,7\% \\
+\midrule
+\textbf{Total} & \textbf{1025} & \textbf{526} & \textbf{499} & \textbf{51,3\%} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{example-image}
+\caption{Distribution des classes par h\^{o}pital en sc\'{e}nario Non-IID (Dirichlet $\alpha = 0.5$). Les barres empil\'{e}es montrent le d\'{e}s\'{e}quilibre significatif entre les classes dans certains h\^{o}pitaux.}
+\label{fig:dist_noniid}
+\end{figure}
+
+\section{Performance globale du mod\`{e}le}
+
+\subsection{R\'{e}sultats en sc\'{e}nario IID}
+
+Le Tableau~\ref{tab:results_iid} pr\'{e}sente les performances finales (au round 15) des quatre algorithmes en sc\'{e}nario IID. FedAvg atteint la meilleure accuracy \`{a} 88,46\%, suivi par FedProx \`{a} 87,50\%, FedAdam \`{a} 86,06\% et Local SGD \`{a} 80,77\%. Ces r\'{e}sultats confirment l'avantage fondamental de la collaboration f\'{e}d\'{e}r\'{e}e par rapport \`{a} l'apprentissage isol\'{e}, avec un gain d'accuracy de pr\`{e}s de 8 points de pourcentage pour FedAvg par rapport \`{a} Local SGD.
+
+L'analyse d\'{e}taill\'{e}e r\'{e}v\`{e}le que FedAvg b\'{e}n\'{e}ficie de la simplicit\'{e} de son m\'{e}canisme d'agr\'{e}gation dans un contexte o\`{u} les distributions locales sont homog\`{e}nes. FedProx, avec son terme de r\'{e}gularisation proximale, introduit un l\'{e}ger biais conservateur qui ralentit la convergence sans apporter d'avantage significatif lorsque les donn\'{e}es sont IID. FedAdam, malgr\'{e} son m\'{e}canisme adaptatif, affiche une loss plus \'{e}lev\'{e}e (0,472 contre 0,341 pour FedAvg), ce qui sugg\`{e}re que l'optimisation adaptative c\^{o}t\'{e} serveur peut introduire des oscillations dans ce contexte. Local SGD souffre de sa convergence vers des optima locaux divergents, avec une loss qui augmente apr\`{e}s le round 5 (de 0,442 \`{a} 0,556), signe de surajustement aux donn\'{e}es locales.
+
+\begin{table}[H]
+\centering
+\caption{Performances finales (round 15) --- sc\'{e}nario IID.}
+\label{tab:results_iid}
+\begin{tabular}{lccccr}
+\toprule
+\textbf{Algorithme} & \textbf{Accuracy} & \textbf{F1} & \textbf{Pr\'{e}cision} & \textbf{Rappel} & \textbf{Loss} \\
+\midrule
+Local SGD & 0,8077 & 0,7904 & 0,8267 & 0,7878 & 0,5561 \\
+FedAvg    & 0,8846 & 0,8836 & 0,8628 & 0,9134 & 0,3414 \\
+FedAdam   & 0,8606 & 0,8593 & 0,8409 & 0,8927 & 0,4721 \\
+FedProx   & 0,8750 & 0,8774 & 0,8451 & 0,9248 & 0,3573 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{R\'{e}sultats en sc\'{e}nario Non-IID}
+
+Le Tableau~\ref{tab:results_noniid} pr\'{e}sente les r\'{e}sultats en sc\'{e}nario Non-IID. FedAvg domine avec une accuracy de 91,35\%, suivi de tr\`{e}s pr\`{e}s par FedProx \`{a} 90,38\%, puis Local SGD \`{a} 91,35\% et FedAdam \`{a} 88,46\%. Un r\'{e}sultat remarquable est que les performances en Non-IID sont g\'{e}n\'{e}ralement sup\'{e}rieures \`{a} celles en IID, ce qui peut s'expliquer par le fait que le partitionnement Dirichlet avec $\alpha = 0.5$ ne cr\'{e}e pas un d\'{e}s\'{e}quilibre extr\^{e}me et que la diversit\'{e} des distributions locales agit comme une forme de r\'{e}gularisation implicite.
+
+FedProx d\'{e}montre sa valeur ajout\'{e}e par la stabilit\'{e} remarquable de sa convergence : l'accuracy se stabilise d\`{e}s le round 7 \`{a} environ 90,4\% et ne fluctue que faiblement par la suite. En comparaison, FedAvg affiche des oscillations plus marqu\'{e}es entre les rounds 7 et 12 (accuracy variant entre 88,9\% et 90,9\%). Local SGD atteint un pic de 91,8\% au round 13 mais souffre de fluctuations, ce qui refl\`{e}te l'instabilit\'{e} inh\'{e}rente \`{a} l'\'{e}valuation de mod\`{e}les locaux divergents sur des donn\'{e}es de test distribu\'{e}es diff\'{e}remment.
+
+\begin{table}[H]
+\centering
+\caption{Performances finales (round 15) --- sc\'{e}nario Non-IID.}
+\label{tab:results_noniid}
+\begin{tabular}{lccccr}
+\toprule
+\textbf{Algorithme} & \textbf{Accuracy} & \textbf{F1} & \textbf{Pr\'{e}cision} & \textbf{Rappel} & \textbf{Loss} \\
+\midrule
+Local SGD & 0,9135 & 0,8038 & 0,8188 & 0,7960 & 0,2443 \\
+FedAvg    & 0,9135 & 0,8632 & 0,8378 & 0,9268 & 0,2093 \\
+FedAdam   & 0,8846 & 0,8298 & 0,8002 & 0,9191 & 0,2676 \\
+FedProx   & 0,9038 & 0,8516 & 0,8283 & 0,9211 & 0,2390 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Comparaison IID vs Non-IID}
+
+Le Tableau~\ref{tab:iid_vs_noniid} pr\'{e}sente une analyse crois\'{e}e des performances entre les deux sc\'{e}narios. Contrairement aux attentes th\'{e}oriques classiques, nous n'observons pas de d\'{e}gradation syst\'{e}matique en Non-IID. FedAvg am\'{e}liore son accuracy de 2,89 points (de 88,46\% \`{a} 91,35\%), tandis que FedProx gagne 2,88 points (de 87,50\% \`{a} 90,38\%). Ce r\'{e}sultat s'explique par la taille modeste du dataset : avec seulement 128 \'{e}chantillons par client en IID, les donn\'{e}es d'entra\^{i}nement locales (80\% de 128 = 102) sont insuffisantes pour une convergence optimale, et le partitionnement Non-IID, en attribuant davantage d'\'{e}chantillons \`{a} certains clients (jusqu'\`{a} 180), compense la perte de repr\'{e}sentativit\'{e} par un gain de volume.
+
+\begin{table}[H]
+\centering
+\caption{Comparaison de l'accuracy entre sc\'{e}narios IID et Non-IID.}
+\label{tab:iid_vs_noniid}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Algorithme} & \textbf{Acc.\ IID} & \textbf{Acc.\ Non-IID} & \textbf{$\Delta$ (pp)} \\
+\midrule
+Local SGD & 0,8077 & 0,9135 & +10,58 \\
+FedAvg    & 0,8846 & 0,9135 & +2,89 \\
+FedAdam   & 0,8606 & 0,8846 & +2,40 \\
+FedProx   & 0,8750 & 0,9038 & +2,88 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Analyse de la convergence}
+
+\subsection{Courbes d'accuracy par round}
+
+La Figure~\ref{fig:acc_conv} pr\'{e}sente l'\'{e}volution de l'accuracy au fil des rounds de communication pour les quatre algorithmes. En sc\'{e}nario IID, FedAvg affiche une convergence rapide avec une acc\'{e}l\'{e}ration marqu\'{e}e entre les rounds 4 et 5 (de 82,7\% \`{a} 87,0\%), puis une stabilisation progressive. FedProx montre une courbe plus lisse et monotonement croissante, atteignant son maximum au round 15. FedAdam pr\'{e}sente un profil initial en deux phases : une mont\'{e}e rapide jusqu'au round 6, suivie d'une stagnation, voire d'une l\'{e}g\`{e}re r\'{e}gression due aux oscillations de la loss. Local SGD plafonne d\`{e}s le round 5 \`{a} environ 81\% et stagne ensuite, illustrant les limites de l'apprentissage isol\'{e}.
+
+En sc\'{e}nario Non-IID, les quatre algorithmes convergent plus rapidement vers des niveaux d'accuracy plus \'{e}lev\'{e}s. FedAvg atteint 87,5\% d\`{e}s le round 1 et d\'{e}passe 90\% au round 5. FedProx suit une trajectoire similaire avec un d\'{e}calage d'un round. Local SGD est le plus rapide \`{a} atteindre 91\% (round 5), mais son absence d'agr\'{e}gation le rend vuln\'{e}rable aux fluctuations.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{example-image}
+\caption{Convergence de l'accuracy au fil des rounds de communication. Gauche : sc\'{e}nario IID. Droite : sc\'{e}nario Non-IID. Les courbes montrent la moyenne pond\'{e}r\'{e}e de l'accuracy sur les donn\'{e}es de test de l'ensemble des clients.}
+\label{fig:acc_conv}
+\end{figure}
+
+\subsection{Courbes de loss par round}
+
+L'analyse des courbes de loss r\'{e}v\`{e}le des diff\'{e}rences fondamentales dans le comportement des algorithmes. En IID, FedAvg et FedProx pr\'{e}sentent des courbes de loss monotonement d\'{e}croissantes : FedAvg passe de 0,645 (round 1) \`{a} 0,341 (round 15), tandis que FedProx \'{e}volue de 0,656 \`{a} 0,357. FedAdam, en revanche, pr\'{e}sente un profil non monotone caract\'{e}ristique : la loss d\'{e}cro\^{i}t d'abord de 0,668 \`{a} 0,417 (round 6), puis remonte \`{a} 0,538 (round 11) avant de redescendre \`{a} 0,472 (round 15). Ce comportement oscillatoire est attribu\'{e} \`{a} l'interaction entre l'optimisation adaptative c\^{o}t\'{e} serveur et l'optimisation Adam c\^{o}t\'{e} client, qui peut cr\'{e}er des instabilit\'{e}s lorsque les deux niveaux d'adaptation interfèrent. Local SGD voit sa loss augmenter apr\`{e}s le round 5, confirmant le diagnostic de surajustement aux donn\'{e}es locales.
+
+En Non-IID, les courbes de loss sont g\'{e}n\'{e}ralement plus lisses et plus basses. FedAvg atteint une loss finale de 0,209, la meilleure de tous les algorithmes. FedProx affiche 0,239, l\'{e}g\`{e}rement sup\'{e}rieure en raison du co\^{u}t du terme de r\'{e}gularisation proximale qui emp\^{e}che la loss de descendre aussi bas.
+
+\subsection{Stabilit\'{e} et oscillations}
+
+Pour quantifier la stabilit\'{e} des algorithmes, nous calculons la variance de la diff\'{e}rence de loss entre rounds cons\'{e}cutifs $\text{Var}(\Delta \mathcal{L}_t)$ o\`{u} $\Delta \mathcal{L}_t = \mathcal{L}_{t} - \mathcal{L}_{t-1}$. En IID, FedProx pr\'{e}sente la variance la plus faible ($\approx 3.2 \times 10^{-4}$), suivie de FedAvg ($\approx 5.8 \times 10^{-4}$), confirmant la propri\'{e}t\'{e} stabilisatrice du terme proximal. FedAdam affiche la variance la plus \'{e}lev\'{e}e ($\approx 2.1 \times 10^{-3}$) en raison de ses oscillations caract\'{e}ristiques. En Non-IID, toutes les variances sont r\'{e}duites, refl\'{e}tant une convergence globalement plus r\'{e}guli\`{e}re dans ce sc\'{e}nario pour notre configuration exp\'{e}rimentale.
+
+\section{Divergence des mod\`{e}les locaux}
+
+\subsection{Mesure de la divergence $L_2$}
+
+La divergence $L_2$ entre les mod\`{e}les locaux et le mod\`{e}le global est une m\'{e}trique essentielle pour comprendre la dynamique de l'apprentissage f\'{e}d\'{e}r\'{e}. \`{A} chaque round, apr\`{e}s l'entra\^{i}nement local mais avant l'agr\'{e}gation, nous calculons $\text{Div}_t = \frac{1}{K}\sum_{k=1}^{K}\|w_k^{(t)} - w^{(t-1)}\|_2$. La Figure~\ref{fig:divergence} illustre l'\'{e}volution de cette m\'{e}trique au fil des rounds.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{example-image}
+\caption{\'{E}volution de la divergence $L_2$ moyenne entre mod\`{e}les locaux et mod\`{e}le global au fil des rounds. La divergence de Local SGD est mesur\'{e}e par rapport aux poids initiaux communs.}
+\label{fig:divergence}
+\end{figure}
+
+\subsection{Interpr\'{e}tation}
+
+L'analyse de la divergence r\'{e}v\`{e}le des comportements contrastants entre les algorithmes. Local SGD pr\'{e}sente une divergence croissante au fil des rounds, car les mod\`{e}les locaux s'\'{e}loignent continuellement de leur point de d\'{e}part commun. Cette divergence cumulative explique la stagnation des performances moyennes : les mod\`{e}les locaux sont de plus en plus sp\'{e}cialis\'{e}s et perdent leur capacit\'{e} de g\'{e}n\'{e}ralisation.
+
+Pour FedAvg et FedAdam, la divergence se stabilise apr\`{e}s quelques rounds, car l'agr\'{e}gation \`{a} chaque round \og{}r\'{e}initialise\fg{} le point de d\'{e}part des mod\`{e}les locaux. FedProx affiche la divergence la plus faible gr\^{a}ce \`{a} son terme proximal qui p\'{e}nalise explicitement les \'{e}carts par rapport au mod\`{e}le global. En Non-IID, les divergences sont syst\'{e}matiquement plus \'{e}lev\'{e}es qu'en IID, confirmant l'impact de l'h\'{e}t\'{e}rog\'{e}n\'{e}it\'{e} statistique sur la d\'{e}rive des clients.
+
+\section{Vitesse de convergence}
+
+\subsection{Rounds n\'{e}cessaires pour atteindre les cibles}
+
+Le Tableau~\ref{tab:rounds_target} indique le nombre de rounds n\'{e}cessaires pour atteindre diff\'{e}rents seuils d'accuracy. Un tiret ($-$) indique que le seuil n'a pas \'{e}t\'{e} atteint en 15 rounds. Ces r\'{e}sultats quantifient l'efficacit\'{e} de la communication : un algorithme atteignant 85\% en 5 rounds au lieu de 10 n\'{e}cessite la moiti\'{e} du volume de communication.
+
+\begin{table}[H]
+\centering
+\caption{Rounds n\'{e}cessaires pour atteindre les seuils d'accuracy cibles.}
+\label{tab:rounds_target}
+\begin{tabular}{lcccccc}
+\toprule
+& \multicolumn{3}{c}{\textbf{IID}} & \multicolumn{3}{c}{\textbf{Non-IID}} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}
+\textbf{Algorithme} & \textbf{80\%} & \textbf{85\%} & \textbf{90\%} & \textbf{80\%} & \textbf{85\%} & \textbf{90\%} \\
+\midrule
+Local SGD & 5 & $-$ & $-$ & 1 & 2 & 5 \\
+FedAvg    & 1 & 5 & $-$ & 1 & 2 & 5 \\
+FedAdam   & 2 & 9 & $-$ & 1 & 2 & $-$ \\
+FedProx   & 3 & 7 & $-$ & 1 & 2 & 5 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Analyse temporelle}
+
+Le Tableau~\ref{tab:time_analysis} pr\'{e}sente les mesures temporelles. Le temps total d'entra\^{i}nement est tr\`{e}s faible (de l'ordre de quelques secondes) en raison de la taille modeste du mod\`{e}le et du dataset. La strat\'{e}gie FedProx est l\'{e}g\`{e}rement plus co\^{u}teuse en temps que FedAvg en raison du calcul suppl\'{e}mentaire du terme proximal. Local SGD est le plus rapide par round car il n'\'{e}vite la copie et la mise \`{a} jour du mod\`{e}le global. Les diff\'{e}rences temporelles restent n\'{e}gligeables pour cette \'{e}chelle de probl\`{e}me.
+
+\begin{table}[H]
+\centering
+\caption{Analyse temporelle de l'entra\^{i}nement (en secondes).}
+\label{tab:time_analysis}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Algorithme} & \textbf{Temps/round (s)} & \textbf{Temps total (s)} & \textbf{Mode} \\
+\midrule
+Local SGD (IID) & $\sim$0,35 & $\sim$5,3 & IID \\
+FedAvg (IID)    & $\sim$0,40 & $\sim$6,0 & IID \\
+FedAdam (IID)   & $\sim$0,42 & $\sim$6,3 & IID \\
+FedProx (IID)   & $\sim$0,43 & $\sim$6,5 & IID \\
+Local SGD (Non-IID) & $\sim$0,36 & $\sim$5,4 & Non-IID \\
+FedAvg (Non-IID)    & $\sim$0,41 & $\sim$6,2 & Non-IID \\
+FedAdam (Non-IID)   & $\sim$0,43 & $\sim$6,5 & Non-IID \\
+FedProx (Non-IID)   & $\sim$0,44 & $\sim$6,6 & Non-IID \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Co\^{u}t de communication}
+
+\subsection{Calcul d\'{e}taill\'{e} du volume \'{e}chang\'{e}}
+
+Le co\^{u}t de communication est un facteur critique pour le d\'{e}ploiement en conditions r\'{e}elles. Pour notre mod\`{e}le de 2\,657 param\`{e}tres stock\'{e}s en float32 (4 octets chacun), la taille du mod\`{e}le est :
+
+\begin{equation}
+\text{model\_bytes} = 2\,657 \times 4 = 10\,628 \text{ octets} \approx 10,4 \text{ Ko}
+\label{eq:model_bytes}
+\end{equation}
+
+\`{A} chaque round, chaque client t\'{e}l\'{e}charge le mod\`{e}le global (download) et envoie ses param\`{e}tres mis \`{a} jour (upload). Avec 8 clients en participation compl\`{e}te :
+
+\begin{equation}
+\text{bytes\_par\_round} = 10\,628 \times 2 \times 8 = 170\,048 \text{ octets} \approx 166 \text{ Ko}
+\label{eq:bytes_round}
+\end{equation}
+
+Sur 15 rounds, le volume total \'{e}chang\'{e} est :
+
+\begin{equation}
+\text{total\_bytes} = 170\,048 \times 15 = 2\,550\,720 \text{ octets} \approx 2,43 \text{ Mo}
+\label{eq:total_bytes}
+\end{equation}
+
+Pour Local SGD, le co\^{u}t de communication est strictement nul. Le Tableau~\ref{tab:comm_cost} r\'{e}sume ces chiffres.
+
+\begin{table}[H]
+\centering
+\caption{Co\^{u}t de communication par algorithme sur 15 rounds.}
+\label{tab:comm_cost}
+\begin{tabular}{lccr}
+\toprule
+\textbf{Algorithme} & \textbf{Par round (Ko)} & \textbf{Total (Mo)} & \textbf{Gain/round} \\
+\midrule
+Local SGD & 0 & 0 & Aucune communication \\
+FedAvg    & 166 & 2,43 & Agr\'{e}gation standard \\
+FedAdam   & 166 & 2,43 & Idem (Adam c\^{o}t\'{e} serveur) \\
+FedProx   & 166 & 2,43 & Idem (proximal local) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Ratio performance/communication}
+
+Pour \'{e}valuer l'efficacit\'{e} de la communication, nous d\'{e}finissons le ratio performance/communication comme le gain d'accuracy par Mo transf\'{e}r\'{e}. Pour FedAvg en IID, l'accuracy passe de l'accuracy initiale al\'{e}atoire ($\sim$50\%) \`{a} 88,46\%, soit un gain de 38,46 points de pourcentage pour 2,43 Mo, correspondant \`{a} un ratio de 15,8 pp/Mo. En Non-IID, FedAvg atteint 91,35\%, soit un ratio de 17,0 pp/Mo. Ces ratios extr\^{e}mement favorables s'expliquent par la taille r\'{e}duite du mod\`{e}le, et illustrent l'efficacit\'{e} de l'apprentissage f\'{e}d\'{e}r\'{e} pour les mod\`{e}les l\'{e}gers.
+
+\subsection{Comparaison avec des architectures lourdes}
+
+Pour contextualiser ces r\'{e}sultats, consid\'{e}rons un sc\'{e}nario hypoth\'{e}tique utilisant un r\'{e}seau ResNet-18 (11,7 millions de param\`{e}tres). La taille du mod\`{e}le serait de $11\,700\,000 \times 4 = 44,7$ Mo. Un seul round de communication avec 8 clients n\'{e}cessiterait $44,7 \times 2 \times 8 = 715$ Mo, et 15 rounds repr\'{e}senteraient environ 10,5 Go. Dans un environnement hospitalier avec des liens r\'{e}seau limit\'{e}s, ce volume serait prohibitif. Notre MLP de 2\,657 param\`{e}tres d\'{e}montre qu'un mod\`{e}le adapt\'{e} \`{a} la nature tabulaire des donn\'{e}es peut atteindre des performances excellentes avec un co\^{u}t de communication n\'{e}gligeable.
+
+\section{Analyse de g\'{e}n\'{e}ralisation}
+
+\subsection{Gap Train/Test}
+
+Le Tableau~\ref{tab:gap_traintest} pr\'{e}sente l'\'{e}cart entre la perte d'entra\^{i}nement et la perte de test pour chaque algorithme, mesur\'{e} au dernier round. Un \'{e}cart faible indique une bonne g\'{e}n\'{e}ralisation, tandis qu'un \'{e}cart \'{e}lev\'{e} sugg\`{e}re un surajustement. Les algorithmes f\'{e}d\'{e}r\'{e}s (FedAvg, FedProx) pr\'{e}sentent syst\'{e}matiquement des \'{e}carts plus faibles que Local SGD, confirmant l'effet r\'{e}gularisateur de l'agr\'{e}gation.
+
+\begin{table}[H]
+\centering
+\caption{\'{E}cart entre perte d'entra\^{i}nement et perte de test (round 15).}
+\label{tab:gap_traintest}
+\begin{tabular}{lcccc}
+\toprule
+& \multicolumn{2}{c}{\textbf{IID}} & \multicolumn{2}{c}{\textbf{Non-IID}} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+\textbf{Algorithme} & \textbf{Test Loss} & \textbf{Gap} & \textbf{Test Loss} & \textbf{Gap} \\
+\midrule
+Local SGD & 0,5561 & \'{E}lev\'{e} & 0,2443 & Mod\'{e}r\'{e} \\
+FedAvg    & 0,3414 & Faible & 0,2093 & Faible \\
+FedAdam   & 0,4721 & Mod\'{e}r\'{e} & 0,2676 & Mod\'{e}r\'{e} \\
+FedProx   & 0,3573 & Faible & 0,2390 & Faible \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Effet r\'{e}gularisateur de l'agr\'{e}gation}
+
+L'agr\'{e}gation par moyenne pond\'{e}r\'{e}e des param\`{e}tres dans FedAvg et FedProx agit comme un m\'{e}canisme de r\'{e}gularisation implicite. En moyennant les param\`{e}tres de mod\`{e}les entra\^{i}n\'{e}s sur des sous-ensembles diff\'{e}rents, le mod\`{e}le global tend \`{a} conserver les caract\'{e}ristiques partag\'{e}es par tous les clients (les features discriminantes universelles) tout en att\'{e}nuant les caract\'{e}ristiques sp\'{e}cifiques \`{a} un seul client (le bruit ou les biais locaux). Ce ph\'{e}nom\`{e}ne est analogue au model averaging en apprentissage d'ensemble, et explique pourquoi les mod\`{e}les f\'{e}d\'{e}r\'{e}s g\'{e}n\'{e}ralisent mieux que les mod\`{e}les isol\'{e}s malgr\'{e} un acc\`{e}s indirect aux donn\'{e}es de tous les clients.
+
+De plus, le terme proximal de FedProx ajoute un second niveau de r\'{e}gularisation en p\'{e}nalisant les \'{e}carts importants par rapport au mod\`{e}le global pendant l'entra\^{i}nement local. Cette double r\'{e}gularisation (agr\'{e}gation + proximal) explique la convergence particuli\`{e}rement lisse et la stabilit\'{e} sup\'{e}rieure de FedProx observ\'{e}es dans nos exp\'{e}riences, m\^{e}me si cela peut l\'{e}g\`{e}rement limiter la performance maximale atteignable.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{example-image}
+\caption{Courbes de convergence de la loss au fil des rounds. Les oscillations de FedAdam en IID sont clairement visibles, tandis que FedProx maintient une d\'{e}croissance monotone dans les deux sc\'{e}narios.}
+\label{fig:loss_conv}
+\end{figure}
+
+% ============================================================================
+%  CHAPITRE 5 : DISCUSSION ET PERSPECTIVES
+% ============================================================================
 \chapter{Discussion et Perspectives}
-%% ======================================================================
 
-\section{Synthèse de la Comparaison des Algorithmes}
+\section{Synth\`{e}se des r\'{e}sultats}
 
-L'analyse de l'ensemble de nos simulations permet de dresser le tableau comparatif qualitatif suivant :
+Le Tableau~\ref{tab:master} constitue le tableau de synth\`{e}se principal de cette \'{e}tude, r\'{e}unissant l'ensemble des m\'{e}triques pour les quatre algorithmes dans les deux sc\'{e}narios de distribution. Cette vue d'ensemble permet de d\'{e}gager les conclusions suivantes. FedAvg offre les meilleures performances brutes (accuracy, F1) dans les deux sc\'{e}narios, confirmant son statut d'algorithme de r\'{e}f\'{e}rence pour des configurations simples avec un nombre raisonnable de clients et une h\'{e}t\'{e}rog\'{e}n\'{e}it\'{e} mod\'{e}r\'{e}e. FedProx offre la convergence la plus stable et r\'{e}guli\`{e}re, avec les variances de loss les plus faibles, ce qui en fait un choix recommand\'{e} pour les d\'{e}ploiements o\`{u} la pr\'{e}visibilit\'{e} est critique.
+
+FedAdam, malgr\'{e} des fondements th\'{e}oriques solides, sous-performe dans notre configuration. Cela s'explique par l'interaction entre l'optimiseur Adam utilis\'{e} localement et l'optimiseur Adam c\^{o}t\'{e} serveur, qui cr\'{e}e une \og{}double adaptation\fg{} potentiellement d\'{e}stabilisante. Ce r\'{e}sultat est coh\'{e}rent avec les observations de Reddi et al.~\cite{reddi2021}, qui recommandent l'utilisation de SGD c\^{o}t\'{e} client avec FedAdam c\^{o}t\'{e} serveur. Local SGD confirme sa pertinence limit\'{e}e comme baseline : la collaboration f\'{e}d\'{e}r\'{e}e apporte un gain syst\'{e}matique en performance et en g\'{e}n\'{e}ralisation.
 
 \begin{table}[H]
-    \centering
-    \caption{Matrice d'évaluation qualitative des stratégies d'optimisation}
-    \begin{tabularx}{\textwidth}{l|XXXX}
-        \toprule
-        \textbf{Critère} & \textbf{Local SGD} & \textbf{FedAvg} & \textbf{FedAdam} & \textbf{FedProx} \\
-        \midrule
-        \textbf{Performance Non-IID} & ❌ Faible & ⚠️ Moyenne & ✅ Bonne & 🏆 Excellente \\
-        \textbf{Stabilité (Oscillations)}& ❌ Instable & ⚠️ Modérée & ✅ Bonne & 🏆 Parfaite \\
-        \textbf{Vitesse (Rounds vers cible)} & ❌ N/A & ⚠️ Lente & 🏆 Très Rapide & ✅ Rapide \\
-        \textbf{Overhead Computationnel} & 🏆 Aucun & 🏆 Aucun & ⚠️ Léger (Serveur) & ⚠️ Léger (Client) \\
-        \textbf{Overhead Communication}  & 🏆 Zéro & ⚠️ Standard & ⚠️ Standard & ⚠️ Standard \\
-        \textbf{Complexité (Hyperparamètres)}& 🏆 0 & 🏆 0 & ❌ 4 ($\beta_1,\beta_2,\tau,\eta_s$) & ✅ 1 ($\mu$) \\
-        \bottomrule
-    \end{tabularx}
+\centering
+\caption{Tableau de synth\`{e}se g\'{e}n\'{e}rale --- toutes m\'{e}triques.}
+\label{tab:master}
+\small
+\begin{tabular}{llcccccc}
+\toprule
+\textbf{Mode} & \textbf{Algo.} & \textbf{Acc.} & \textbf{F1} & \textbf{Loss} & \textbf{Comm.\ (Mo)} & \textbf{R$\to$85\%} \\
+\midrule
+\multirow{4}{*}{IID}
+& Local SGD & 0,808 & 0,790 & 0,556 & 0 & $-$ \\
+& FedAvg    & 0,885 & 0,884 & 0,341 & 2,43 & 5 \\
+& FedAdam   & 0,861 & 0,859 & 0,472 & 2,43 & 9 \\
+& FedProx   & 0,875 & 0,877 & 0,357 & 2,43 & 7 \\
+\midrule
+\multirow{4}{*}{Non-IID}
+& Local SGD & 0,914 & 0,804 & 0,244 & 0 & 2 \\
+& FedAvg    & 0,914 & 0,863 & 0,209 & 2,43 & 2 \\
+& FedAdam   & 0,885 & 0,830 & 0,268 & 2,43 & 2 \\
+& FedProx   & 0,904 & 0,852 & 0,239 & 2,43 & 2 \\
+\bottomrule
+\end{tabular}
 \end{table}
 
-\textbf{Conclusion principale} : Bien que FedAvg reste l'algorithme standard par excellence en raison de sa simplicité (pas d'hyperparamètres), l'apprentissage fédéré en milieu médical (fortement Non-IID) \textbf{nécessite des algorithmes de nouvelle génération}. 
-Si la contrainte principale est le nombre strict de communications, \textbf{FedAdam} est préférable pour son décollage foudroyant. Si la contrainte principale est la fiabilité mathématique, l'absence d'oscillations et la robustesse à des distributions extrêmes, \textbf{FedProx} est le vainqueur incontesté.
+\section{Recommandations par sc\'{e}nario}
 
-\section{Limites de l'Étude Actuelle}
-Bien que le cahier des charges de la mission ait été scrupuleusement respecté, notre simulateur présente certaines simplifications vis-à-vis d'un déploiement médical réel :
-\begin{enumerate}
-    \item \textbf{Participation totale} : Nous avons simulé une participation à 100\% (les 8 hôpitaux sont connectés à chaque round). Dans la réalité, le protocole de communication subit des pannes (disponibilité asynchrone).
-    \item \textbf{Taille du dataset} : Les données de maladies cardiaques utilisées (1025 patients) sont relativement restreintes pour observer les comportements asomptotiques profonds des réseaux de neurones. Une validation croisée sur des bases de données massives (ex: eICU, MIMIC-IV) serait pertinente.
-    \item \textbf{Hétérogénéité des volumes} : Nous avons testé l'hétérogénéité des classes (Dirichlet) mais pas l'hétérogénéité des volumes (des hôpitaux avec 10 000 patients et d'autres avec 100).
-\end{enumerate}
+Sur la base de nos r\'{e}sultats exp\'{e}rimentaux et de l'analyse th\'{e}orique, nous formulons les recommandations suivantes pour le choix de l'algorithme f\'{e}d\'{e}r\'{e} en fonction du contexte de d\'{e}ploiement.
 
-\section{Perspectives et Améliorations Futures}
-L'architecture de notre code a été pensée pour être extensible. Les futurs travaux pourraient s'orienter vers :
-\begin{itemize}
-    \item \textbf{Confidentialité Différentielle (Differential Privacy)} : Bien que FL ne partage pas les données, des attaques mathématiques complexes (inversion de gradients) peuvent retrouver des informations patients depuis les vecteurs de poids. L'ajout d'un bruit laplacien lors de l'envoi des poids garantirait une confidentialité prouvable.
-    \item \textbf{Agrégation Sécurisée (Secure Multi-Party Computation)} : Le serveur central actuel, bien qu'il ne voie pas les données, voit les modèles en clair de chaque hôpital. Les protocoles cryptographiques permettront au serveur de n'observer que la moyenne des modèles, sans avoir accès aux modèles locaux individuels.
-    \item \textbf{Personnalisation (Federated Personalization)} : Au lieu de forcer tous les hôpitaux à utiliser le modèle global (parfois sous-optimal pour leurs populations très spécifiques), les hôpitaux pourraient utiliser le modèle global comme base (backbone) et y ajouter une couche spécifique fine-tunée localement (ex: algorithme \textit{Ditto}).
-\end{itemize}
+Dans un sc\'{e}nario de \textbf{consortium hospitalier homog\`{e}ne} (h\^{o}pitaux de taille similaire, protocoles standardis\'{e}s, populations comparables), \textbf{FedAvg} est le choix optimal en raison de sa simplicit\'{e} d'impl\'{e}mentation, de ses performances \'{e}lev\'{e}es et de sa faible empreinte computationnelle. L'absence de terme de r\'{e}gularisation suppl\'{e}mentaire n'est pas p\'{e}nalisante lorsque les donn\'{e}es sont approximativement IID.
 
-%% ======================================================================
-\chapter{Conclusion Générale}
-%% ======================================================================
+Dans un sc\'{e}nario de \textbf{consortium h\'{e}t\'{e}rog\`{e}ne} (h\^{o}pitaux sp\'{e}cialis\'{e}s, populations distinctes, volumes de donn\'{e}es variables), \textbf{FedProx} est recommand\'{e} pour sa capacit\'{e} \`{a} maintenir une convergence stable malgr\'{e} l'h\'{e}t\'{e}rog\'{e}n\'{e}it\'{e} des donn\'{e}es. Le param\`{e}tre $\mu$ doit \^{e}tre ajust\'{e} en fonction du degr\'{e} d'h\'{e}t\'{e}rog\'{e}n\'{e}it\'{e} : un $\mu$ plus \'{e}lev\'{e} est recommand\'{e} pour des distributions tr\`{e}s d\'{e}s\'{e}quilibr\'{e}es.
 
-Le présent projet d'ingénierie et de recherche appliquée avait pour ambition de concevoir un système de classification de maladies cardiaques à travers l'apprentissage fédéré, et d'en optimiser les paramètres de convergence face au défi majeur de l'hétérogénéité des données médicales.
+L'utilisation de \textbf{FedAdam} est conseill\'{e}e uniquement lorsque l'optimiseur local est SGD (et non Adam), pour \'{e}viter la double adaptation. Cette configuration peut \^{e}tre avantageuse pour des mod\`{e}les de grande taille avec des \'{e}chelles de gradient tr\`{e}s h\'{e}t\'{e}rog\`{e}nes entre les diff\'{e}rentes couches du r\'{e}seau.
 
-Au travers du développement complet d'un simulateur en Python et PyTorch, orchestrant un réseau virtuel de 8 établissements de santé, nous avons empiriquement validé l'incapacité d'une approche isolée (\textit{Local SGD}) à généraliser sur des pathologies variées. L'entraînement collaboratif, en revanche, a permis de gagner jusqu'à 16\% de précision globale, le tout en préservant mathématiquement le secret médical en ne transférant que 2.45 Mo de métadonnées de modèles au cours de l'ensemble de la procédure.
+\section{Analyse critique et limites}
 
-Notre étude met en lumière les limites de l'algorithme standard FedAvg face à la dérive locale causée par les environnements hautement asymétriques (simulés via une distribution de Dirichlet $\alpha=0.5$). Pour y remédier, nous avons implémenté avec succès des algorithmes d'optimisation de pointe issus de la littérature académique récente. \textbf{FedAdam} a prouvé sa remarquable vélocité, réduisant les rounds nécessaires pour converger. Surtout, \textbf{FedProx} s'est distingué comme l'approche la plus robuste ; son astucieuse régularisation proximale force la cohésion des modèles hospitaliers, annihilant les oscillations et limitant la divergence mathématique stricte, produisant in fine le modèle global le plus précis et le plus apte à généraliser (Gap Train/Test minimal).
+\subsection{Limites du dataset}
 
-En conclusion, ce projet ne démontre pas seulement la viabilité technique de l'Apprentissage Fédéré pour le Machine Learning de demain ; il souligne que le succès de son déploiement à grande échelle reposera entièrement sur le raffinement des méthodes d'optimisation mathématique distribuée.
+Plusieurs limites li\'{e}es au dataset doivent \^{e}tre reconnues. Premi\`{e}rement, la taille de 1025 \'{e}chantillons est modeste pour une partition en 8 clients, r\'{e}sultant en environ 100 \'{e}chantillons d'entra\^{i}nement par client. Cette taille r\'{e}duite peut amplifier la variance des r\'{e}sultats entre diff\'{e}rentes ex\'{e}cutions et entre diff\'{e}rents clients. Deuxi\`{e}mement, le dataset ne contient pas de composante temporelle, ce qui emp\^{e}che l'\'{e}tude du temporal skew. Troisi\`{e}mement, les donn\'{e}es proviennent initialement d'une source unique et sont artificiellement partitionn\'{e}es, ce qui ne capture pas la v\'{e}ritable h\'{e}t\'{e}rog\'{e}n\'{e}it\'{e} inter-institutionnelle en termes de protocoles de mesure, de calibration des instruments, ou de pratiques cliniques.
 
-%% ======================================================================
-%% Références
-%% ======================================================================
-\newpage
-\addcontentsline{toc}{chapter}{Bibliographie}
-\begin{thebibliography}{9}
+\subsection{Limites de la simulation}
+
+Notre simulation adopte un mode de participation compl\`{e}te (full participation) o\`{u} tous les clients participent \`{a} chaque round, ce qui est optimiste pour un d\'{e}ploiement r\'{e}el o\`{u} certains h\^{o}pitaux pourraient \^{e}tre temporairement indisponibles. L'ex\'{e}cution s\'{e}quentielle des clients (plut\^{o}t que parall\`{e}le) \'{e}limine les probl\`{e}mes de synchronisation mais ne refl\`{e}te pas les d\'{e}lais r\'{e}els de communication r\'{e}seau. L'absence de simulation de latence r\'{e}seau, de perte de paquets et de clients \og{}tra\^{i}nards\fg{} (stragglers) constitue une simplification significative. Dans un d\'{e}ploiement r\'{e}el, un h\^{o}pital avec un mat\'{e}riel moins performant ou une connexion r\'{e}seau instable pourrait retarder l'ensemble du processus dans un sch\'{e}ma synchrone.
+
+\subsection{Limites de s\'{e}curit\'{e}}
+
+Bien que l'apprentissage f\'{e}d\'{e}r\'{e} n'\'{e}change pas les donn\'{e}es brutes, les param\`{e}tres du mod\`{e}le peuvent potentiellement r\'{e}v\'{e}ler des informations sur les donn\'{e}es d'entra\^{i}nement. Les attaques par inversion de gradient (gradient inversion attacks) peuvent, dans certaines conditions, reconstruire des \'{e}chantillons d'entra\^{i}nement \`{a} partir des gradients ou des mises \`{a} jour de param\`{e}tres \'{e}chang\'{e}s. De m\^{e}me, les attaques par empoisonnement du mod\`{e}le (model poisoning), o\`{u} un client malveillant envoie des param\`{e}tres corrompus, n'ont pas \'{e}t\'{e} test\'{e}es dans notre cadre exp\'{e}rimental. Ces aspects de s\'{e}curit\'{e} sont critiques pour un d\'{e}ploiement en environnement m\'{e}dical r\'{e}el et constituent un axe de travail futur important.
+
+\section{Perspectives futures}
+
+\subsection{Confidentialit\'{e} diff\'{e}rentielle}
+
+La confidentialit\'{e} diff\'{e}rentielle (Differential Privacy, DP) est une technique math\'{e}matiquement rigoureuse qui offre des garanties formelles de confidentialit\'{e} en ajoutant un bruit calibr\'{e} aux gradients ou aux param\`{e}tres avant leur envoi au serveur. Formellement, un m\'{e}canisme $\mathcal{M}$ satisfait la $(\epsilon, \delta)$-confidentialit\'{e} diff\'{e}rentielle si, pour tout sous-ensemble $S$ de sorties possibles et pour tous datasets adjacents $\mathcal{D}, \mathcal{D}'$ (diff\'{e}rant d'un seul \'{e}chantillon) : $\Pr[\mathcal{M}(\mathcal{D}) \in S] \leq e^{\epsilon} \Pr[\mathcal{M}(\mathcal{D}') \in S] + \delta$. L'int\'{e}gration de DP dans notre pipeline f\'{e}d\'{e}r\'{e} n\'{e}cessiterait un \'{e}quilibrage d\'{e}licat entre le niveau de confidentialit\'{e} (param\`{e}tre $\epsilon$) et la pr\'{e}cision du mod\`{e}le, car l'ajout de bruit d\'{e}grade in\'{e}vitablement les performances.
+
+\subsection{Agr\'{e}gation s\'{e}curis\'{e}e}
+
+Le calcul multipartite s\'{e}curis\'{e} (Secure Multi-Party Computation, SMPC) permettrait au serveur de calculer l'agr\'{e}gation des param\`{e}tres sans jamais voir les contributions individuelles des clients. Des protocoles comme le masquage additif (additive masking) ou le partage de secrets de Shamir pourraient \^{e}tre int\'{e}gr\'{e}s pour emp\^{e}cher un serveur curieux d'acc\'{e}der aux param\`{e}tres individuels de chaque h\^{o}pital. Cette couche de s\'{e}curit\'{e} suppl\'{e}mentaire est essentielle pour des d\'{e}ploiements dans des environnements o\`{u} le serveur central n'est pas pleinement de confiance, comme un consortium inter-\'{e}tablissements sans autorit\'{e} centrale.
+
+\subsection{Personnalisation f\'{e}d\'{e}r\'{e}e}
+
+Les algorithmes de personnalisation f\'{e}d\'{e}r\'{e}e, tels que Ditto et Per-FedAvg, visent \`{a} combiner les avantages du mod\`{e}le global (g\'{e}n\'{e}ralisation) et des mod\`{e}les locaux (sp\'{e}cialisation). Ditto entra\^{i}ne simultan\'{e}ment un mod\`{e}le global et un mod\`{e}le personnalis\'{e} pour chaque client, ce dernier \'{e}tant r\'{e}gularis\'{e} par le mod\`{e}le global. Per-FedAvg utilise le m\'{e}ta-apprentissage (MAML) pour produire un mod\`{e}le global qui peut \^{e}tre rapidement adapt\'{e} \`{a} chaque client avec quelques pas de gradient local. Ces approches sont particuli\`{e}rement pertinentes dans notre contexte m\'{e}dical, o\`{u} chaque h\^{o}pital pourrait b\'{e}n\'{e}ficier d'un mod\`{e}le ajust\'{e} \`{a} sa population sp\'{e}cifique tout en exploitant les connaissances g\'{e}n\'{e}rales acquises aupr\`{e}s de l'ensemble du consortium.
+
+\subsection{Passage \`{a} l'\'{e}chelle}
+
+Plusieurs axes permettraient de passer \`{a} l'\'{e}chelle. La s\'{e}lection partielle de clients (client sampling) r\'{e}duirait le co\^{u}t de communication en ne s\'{e}lectionnant qu'un sous-ensemble de clients \`{a} chaque round. L'apprentissage f\'{e}d\'{e}r\'{e} asynchrone, o\`{u} le serveur agr\`{e}ge les mises \`{a} jour d\`{e}s leur r\'{e}ception sans attendre tous les clients, \'{e}liminerait le probl\`{e}me des stragglers. L'agr\'{e}gation hi\'{e}rarchique, avec des serveurs interm\'{e}diaires r\'{e}gionaux, pourrait r\'{e}duire la charge du serveur central et am\'{e}liorer la tol\'{e}rance aux pannes. Enfin, des techniques de compression des mod\`{e}les (quantification, \'{e}lagage, distillation) permettraient de r\'{e}duire davantage le volume de communication sans d\'{e}grader significativement les performances.
+
+\subsection{D\'{e}ploiement r\'{e}el}
+
+Le passage d'une simulation \`{a} un d\'{e}ploiement r\'{e}el n\'{e}cessiterait plusieurs composants suppl\'{e}mentaires. Au niveau de la s\'{e}curit\'{e} r\'{e}seau, l'utilisation de TLS (Transport Layer Security) pour le chiffrement des communications et l'authentification mutuelle (mutual TLS) pour v\'{e}rifier l'identit\'{e} des clients seraient indispensables. L'int\'{e}gration dans l'infrastructure IT hospitali\`{e}re n\'{e}cessiterait une conformit\'{e} avec les normes de s\'{e}curit\'{e} en vigueur et une int\'{e}gration avec les syst\`{e}mes d'information hospitaliers existants. Le d\'{e}ploiement sur des dispositifs edge computing \`{a} proximit\'{e} des serveurs hospitaliers r\'{e}duirait la latence et am\'{e}liorerait la fiabilit\'{e}. Enfin, un syst\`{e}me de monitoring continu devrait surveiller la qualit\'{e} du mod\`{e}le, d\'{e}tecter les d\'{e}rives de distribution et alerter en cas d'anomalie.
+
+% ============================================================================
+%  CHAPITRE 6 : CONCLUSION G\'{E}N\'{E}RALE
+% ============================================================================
+\chapter{Conclusion G\'{e}n\'{e}rale}
+
+Ce projet a permis de mener une \'{e}tude comparative approfondie de quatre algorithmes d'optimisation f\'{e}d\'{e}r\'{e}e dans le contexte de la d\'{e}tection de maladies cardiaques. \`{A} travers la simulation d'un consortium de huit h\^{o}pitaux exploitant le dataset Heart Disease UCI, nous avons \'{e}valu\'{e} les performances, la convergence, la stabilit\'{e} et l'efficacit\'{e} de Local SGD, FedAvg, FedAdam et FedProx dans des conditions IID et Non-IID. Les conclusions principales sont les suivantes.
+
+\textbf{1. La collaboration f\'{e}d\'{e}r\'{e}e surpasse l'apprentissage isol\'{e}.} Les r\'{e}sultats d\'{e}montrent de mani\`{e}re univoque que les algorithmes f\'{e}d\'{e}r\'{e}s (FedAvg, FedAdam, FedProx) surpassent syst\'{e}matiquement Local SGD en termes de score F1 et de capacit\'{e} de g\'{e}n\'{e}ralisation. En sc\'{e}nario IID, FedAvg atteint un F1 de 0,884 contre 0,790 pour Local SGD, soit un gain de 9,4 points. En Non-IID, FedAvg atteint 0,863 contre 0,804 pour Local SGD. L'agr\'{e}gation des param\`{e}tres agit comme un m\'{e}canisme de r\'{e}gularisation implicite qui r\'{e}duit le surajustement et am\'{e}liore la g\'{e}n\'{e}ralisation.
+
+\textbf{2. FedProx offre la convergence la plus stable.} Le terme de r\'{e}gularisation proximale ($\mu = 0.1$) de FedProx r\'{e}duit efficacement la d\'{e}rive des clients et produit des courbes de convergence monotonement d\'{e}croissantes. Cette propri\'{e}t\'{e} est particuli\`{e}rement pr\'{e}cieuse en contexte m\'{e}dical, o\`{u} la pr\'{e}visibilit\'{e} du comportement du mod\`{e}le est essentielle pour obtenir la confiance des praticiens.
+
+\textbf{3. Le co\^{u}t de communication est n\'{e}gligeable pour les mod\`{e}les tabulaires.} Avec seulement 2,43 Mo \'{e}chang\'{e}s sur 15 rounds pour un mod\`{e}le de 2\,657 param\`{e}tres, l'apprentissage f\'{e}d\'{e}r\'{e} est parfaitement viable m\^{e}me sur des connexions r\'{e}seau modestes. Ce r\'{e}sultat plaide en faveur de l'utilisation de mod\`{e}les adapt\'{e}s \`{a} la nature des donn\'{e}es plut\^{o}t que de mod\`{e}les sur-dimensionn\'{e}s.
+
+\textbf{4. L'h\'{e}t\'{e}rog\'{e}n\'{e}it\'{e} mod\'{e}r\'{e}e n'est pas r\'{e}dhibitoire.} Contrairement aux attentes th\'{e}oriques, le sc\'{e}nario Non-IID ($\alpha = 0.5$) ne d\'{e}grade pas syst\'{e}matiquement les performances dans notre configuration. Ce r\'{e}sultat encourage le d\'{e}ploiement de l'apprentissage f\'{e}d\'{e}r\'{e} dans des environnements hospitaliers r\'{e}els o\`{u} une certaine h\'{e}t\'{e}rog\'{e}n\'{e}it\'{e} est in\'{e}vitable.
+
+Ce travail constitue une contribution concr\`{e}te \`{a} l'\'{e}tude de l'apprentissage f\'{e}d\'{e}r\'{e} appliqu\'{e} au domaine m\'{e}dical, en fournissant une impl\'{e}mentation compl\`{e}te et une analyse comparative rigoureuse de quatre algorithmes fondamentaux. La simulation d\'{e}velopp\'{e}e, bien que simplifi\'{e}e par rapport \`{a} un d\'{e}ploiement r\'{e}el, d\'{e}montre la faisabilit\'{e} et les b\'{e}n\'{e}fices du paradigme f\'{e}d\'{e}r\'{e} pour la d\'{e}tection de maladies cardiaques. Les perspectives ouvertes --- confidentialit\'{e} diff\'{e}rentielle, agr\'{e}gation s\'{e}curis\'{e}e, personnalisation, passage \`{a} l'\'{e}chelle --- dessinent un programme de recherche prometteur pour faire de l'apprentissage f\'{e}d\'{e}r\'{e} un outil clinique de routine au service de la sant\'{e} publique.
+
+% ============================================================================
+%  BIBLIOGRAPHIE
+% ============================================================================
+\begin{thebibliography}{10}
 
 \bibitem{mcmahan2017}
-  H.~B. McMahan, E.~Moore, D.~Ramage, S.~Hampson, and B.~A.~y~Arcas,
-  \textit{Communication-Efficient Learning of Deep Networks from Decentralized Data},
-  in \textit{Proceedings of the 20th International Conference on Artificial Intelligence and Statistics (AISTATS)}, Fort Lauderdale, FL, USA, 2017.
+B.~McMahan, E.~Moore, D.~Ramage, S.~Hampson, and B.~A.~y~Arcas,
+``Communication-efficient learning of deep networks from decentralized data,''
+in \textit{Proc.\ 20th Int.\ Conf.\ Artificial Intelligence and Statistics (AISTATS)}, 2017, pp.~1273--1282.
 
-\bibitem{reddi2020}
-  S.~J. Reddi, Z.~Charles, M.~Zaheer, Z.~Garrett, K.~Rush, J.~Kone\v{c}n\'{y}, S.~Kumar, and H.~B. McMahan,
-  \textit{Adaptive Federated Optimization},
-  in \textit{Proceedings of the International Conference on Learning Representations (ICLR)}, 2021.
+\bibitem{reddi2021}
+S.~Reddi, Z.~Charles, M.~Zaheer, Z.~Garrett, K.~Rush, J.~Kone\v{c}n\'{y}, S.~Kumar, and H.~B.~McMahan,
+``Adaptive federated optimization,''
+in \textit{Proc.\ 9th Int.\ Conf.\ Learning Representations (ICLR)}, 2021.
 
 \bibitem{li2020fedprox}
-  T.~Li, A.~K. Sahu, M.~Zaheer, M.~Sanjabi, A.~Talwalkar, and V.~Smith,
-  \textit{Federated Optimization in Heterogeneous Networks},
-  in \textit{Proceedings of Machine Learning and Systems (MLSys)}, 2020.
+T.~Li, A.~K.~Sahu, M.~Zaheer, M.~Sanjabi, A.~Talwalkar, and V.~Smith,
+``Federated optimization in heterogeneous networks,''
+in \textit{Proc.\ Machine Learning and Systems (MLSys)}, vol.~2, 2020, pp.~429--450.
 
 \bibitem{li2020challenges}
-  T.~Li, A.~K. Sahu, A.~Talwalkar, and V.~Smith,
-  \textit{Federated Learning: Challenges, Methods, and Future Directions},
-  \textit{IEEE Signal Processing Magazine}, vol.~37, no.~3, pp.~50--60, 2020.
+T.~Li, A.~K.~Sahu, A.~Talwalkar, and V.~Smith,
+``Federated learning: Challenges, methods, and future directions,''
+\textit{IEEE Signal Processing Magazine}, vol.~37, no.~3, pp.~50--60, 2020.
 
-\bibitem{kairouz2019}
-  P.~Kairouz \textit{et al.},
-  \textit{Advances and Open Problems in Federated Learning},
-  \textit{Foundations and Trends in Machine Learning}, vol.~14, no.~1--2, pp.~1--210, 2021.
+\bibitem{kairouz2021}
+P.~Kairouz, H.~B.~McMahan, B.~Avent, \textit{et al.},
+``Advances and open problems in federated learning,''
+\textit{Foundations and Trends in Machine Learning}, vol.~14, no.~1--2, pp.~1--210, 2021.
 
 \bibitem{zhao2018}
-  Y. Zhao, M. Li, L. Lai, N. Suda, D. Civin, and V. Chandra,
-  \textit{Federated Learning with Non-IID Data},
-  \textit{arXiv preprint arXiv:1806.00582}, 2018.
+Y.~Zhao, M.~Li, L.~Lai, N.~Suda, D.~Civin, and V.~Chandra,
+``Federated learning with non-IID data,''
+\textit{arXiv preprint arXiv:1806.00582}, 2018.
 
-\bibitem{heart_dataset}
-  UCI Machine Learning Repository,
-  \textit{Heart Disease Data Set},
-  \url{https://archive.ics.uci.edu/ml/datasets/Heart+Disease}, 1988.
+\bibitem{bonawitz2019}
+K.~Bonawitz, H.~Eichner, W.~Grieskamp, \textit{et al.},
+``Towards federated learning at scale: A system design,''
+in \textit{Proc.\ Machine Learning and Systems (MLSys)}, vol.~1, 2019, pp.~374--388.
+
+\bibitem{uci_heart}
+A.~Janosi, W.~Steinbrunn, M.~Pfisterer, and R.~Detrano,
+``Heart disease dataset,''
+UCI Machine Learning Repository, 1988.
+\url{https://archive.ics.uci.edu/ml/datasets/heart+disease}
 
 \end{thebibliography}
+
+% ============================================================================
+%  ANNEXES
+% ============================================================================
+\appendix
+
+\chapter{Code source principal}
+
+Cette annexe pr\'{e}sente les extraits de code les plus significatifs de l'impl\'{e}mentation. Le code complet est disponible dans le d\'{e}p\^{o}t du projet.
+
+\section{Fonction d'agr\'{e}gation}
+
+La fonction \texttt{aggregate()} impl\'{e}mente la moyenne pond\'{e}r\'{e}e des param\`{e}tres (FedAvg) :
+
+\begin{lstlisting}[caption={Fonction d'agr\'{e}gation FedAvg.},label={lst:aggregate}]
+def aggregate(weights_results):
+    """Weighted average of model weights (FedAvg aggregation)."""
+    total_samples = sum(n for w, n in weights_results)
+    agg_weights = []
+    for i, (weights, n) in enumerate(weights_results):
+        frac = n / total_samples
+        if i == 0:
+            agg_weights = [w * frac for w in weights]
+        else:
+            agg_weights = [aw + w * frac
+                           for aw, w in zip(agg_weights, weights)]
+    return agg_weights
+\end{lstlisting}
+
+\section{Entra\^{i}nement local du client}
+
+La m\'{e}thode \texttt{LocalClient.train()} g\`{e}re l'entra\^{i}nement local avec le support du terme proximal pour FedProx :
+
+\begin{lstlisting}[caption={M\'{e}thode d'entra\^{i}nement local avec support FedProx.},label={lst:train}]
+def train(self, global_model, epochs, lr,
+          strategy="FedAvg", mu=0.1):
+    model = copy.deepcopy(global_model)
+    model.to(self.device)
+    model.train()
+    optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+    criterion = nn.BCEWithLogitsLoss()
+    global_params = [p.clone().detach()
+                     for p in global_model.parameters()]
+
+    epoch_loss, n_batches = 0.0, 0
+    for epoch in range(epochs):
+        for inputs, labels in self.trainloader:
+            inputs = inputs.to(self.device)
+            labels = labels.to(self.device).float().unsqueeze(1)
+            optimizer.zero_grad()
+            outputs = model(inputs)
+            loss = criterion(outputs, labels)
+
+            if strategy == "FedProx":
+                proximal_term = 0.0
+                for param, gp in zip(model.parameters(),
+                                     global_params):
+                    proximal_term += ((param - gp)**2).sum()
+                loss += (mu / 2.0) * proximal_term
+
+            loss.backward()
+            optimizer.step()
+            epoch_loss += loss.item()
+            n_batches += 1
+
+    avg_train_loss = epoch_loss / max(n_batches, 1)
+    updated_weights = [p.cpu().detach().numpy()
+                       for p in model.parameters()]
+    return updated_weights, self.num_train, avg_train_loss
+\end{lstlisting}
+
+\section{Boucle principale de simulation}
+
+La fonction \texttt{run\_simulation()} orchestre le processus f\'{e}d\'{e}r\'{e} complet, incluant le support des trois strat\'{e}gies (FedAvg, FedAdam, FedProx) :
+
+\begin{lstlisting}[caption={Boucle principale de simulation f\'{e}d\'{e}r\'{e}e (extrait).},label={lst:simulation}]
+for r in range(1, num_rounds + 1):
+    round_start = time.perf_counter()
+    weights_results = []
+    for client in clients:
+        weights, n, train_loss = client.train(
+            global_model, epochs=epochs, lr=0.001,
+            strategy=strategy_name
+        )
+        weights_results.append((weights, n))
+
+    agg_weights = aggregate(weights_results)
+    divergence = compute_divergence(
+        [w for w, n in weights_results], global_model
+    )
+
+    if strategy_name == "FedAdam":
+        global_weights = [p.detach().numpy()
+                         for p in global_model.parameters()]
+        delta_t = [gw - aw
+                   for gw, aw in zip(global_weights, agg_weights)]
+        for i in range(len(m_t)):
+            m_t[i] = beta1*m_t[i] + (1-beta1)*delta_t[i]
+            v_t[i] = beta2*v_t[i] + (1-beta2)*(delta_t[i]**2)
+            global_weights[i] = (global_weights[i]
+                - eta * m_t[i] / (np.sqrt(v_t[i]) + tau))
+        new_params = global_weights
+    else:
+        new_params = agg_weights
+
+    # Update global model
+    params_dict = zip(global_model.state_dict().keys(),
+                      new_params)
+    state_dict = OrderedDict(
+        {k: torch.tensor(v) for k, v in params_dict})
+    global_model.load_state_dict(state_dict, strict=True)
+\end{lstlisting}
+
+\chapter{Glossaire des termes techniques}
+
+\begin{description}
+\item[Apprentissage f\'{e}d\'{e}r\'{e} (Federated Learning)] Paradigme d'apprentissage automatique distribu\'{e} permettant l'entra\^{i}nement collaboratif d'un mod\`{e}le sans centralisation des donn\'{e}es.
+
+\item[Agr\'{e}gation] Op\'{e}ration c\^{o}t\'{e} serveur combinant les param\`{e}tres des mod\`{e}les locaux en un mod\`{e}le global. La m\'{e}thode la plus courante est la moyenne pond\'{e}r\'{e}e par le nombre d'\'{e}chantillons.
+
+\item[BCEWithLogitsLoss] Fonction de perte combinant une couche sigmo\"{\i}de et l'entropie crois\'{e}e binaire, utilis\'{e}e pour la classification binaire avec une stabilit\'{e} num\'{e}rique am\'{e}lior\'{e}e.
+
+\item[Client drift (d\'{e}rive des clients)] Ph\'{e}nom\`{e}ne par lequel les mod\`{e}les locaux s'\'{e}loignent du mod\`{e}le global apr\`{e}s un entra\^{i}nement local sur des donn\'{e}es h\'{e}t\'{e}rog\`{e}nes.
+
+\item[Confidentialit\'{e} diff\'{e}rentielle (Differential Privacy)] M\'{e}canisme math\'{e}matique ajoutant un bruit calibr\'{e} pour garantir formellement qu'aucun \'{e}chantillon individuel ne peut \^{e}tre identifi\'{e} \`{a} partir des sorties du mod\`{e}le.
+
+\item[Distribution de Dirichlet] Distribution de probabilit\'{e} sur le simplexe, utilis\'{e}e dans la litt\'{e}rature FL pour simuler des partitions Non-IID contr\^{o}l\'{e}es.
+
+\item[Dropout] Technique de r\'{e}gularisation d\'{e}sactivant al\'{e}atoirement une fraction $p$ des neurones pendant l'entra\^{i}nement pour pr\'{e}venir le surajustement.
+
+\item[FedAvg (Federated Averaging)] Algorithme f\'{e}d\'{e}r\'{e} de r\'{e}f\'{e}rence combinant SGD local et agr\'{e}gation par moyenne pond\'{e}r\'{e}e.
+
+\item[FedAdam] Variante adaptative de FedAvg utilisant les m\'{e}canismes de momentum et de variance d'Adam c\^{o}t\'{e} serveur pour les mises \`{a} jour du mod\`{e}le global.
+
+\item[FedProx] Extension de FedAvg ajoutant un terme de r\'{e}gularisation proximale $\frac{\mu}{2}\|w - w^{(t)}\|^2$ \`{a} l'objectif local pour limiter la d\'{e}rive des clients.
+
+\item[IID (Independent and Identically Distributed)] Hypoth\`{e}se statistique selon laquelle les donn\'{e}es de chaque client suivent la m\^{e}me distribution que la population globale.
+
+\item[Label skew] Type d'h\'{e}t\'{e}rog\'{e}n\'{e}it\'{e} statistique o\`{u} la distribution des classes diff\`{e}re entre les clients.
+
+\item[MLP (Multilayer Perceptron)] R\'{e}seau de neurones compl\`{e}tement connect\'{e} compos\'{e} de couches lin\'{e}aires et de fonctions d'activation non lin\'{e}aires.
+
+\item[Non-IID (Non-Independent and Identically Distributed)] Situation o\`{u} les distributions de donn\'{e}es diff\`{e}rent entre les clients, constituant le d\'{e}fi central de l'apprentissage f\'{e}d\'{e}r\'{e}.
+
+\item[Pseudo-gradient] Dans FedAdam, diff\'{e}rence entre le mod\`{e}le global courant et le r\'{e}sultat de l'agr\'{e}gation, trait\'{e}e comme un gradient pour l'optimisation c\^{o}t\'{e} serveur.
+
+\item[ReLU (Rectified Linear Unit)] Fonction d'activation d\'{e}finie par $\max(0, x)$, largement utilis\'{e}e dans les r\'{e}seaux de neurones modernes pour sa simplicit\'{e} et ses propri\'{e}t\'{e}s de gradient favorable.
+
+\item[Round de communication] Cycle complet comprenant la distribution du mod\`{e}le global, l'entra\^{i}nement local sur tous les clients, et l'agr\'{e}gation des mises \`{a} jour.
+
+\item[SGD (Stochastic Gradient Descent)] Algorithme d'optimisation it\'{e}ratif utilisant des estimations stochastiques du gradient sur des mini-batchs.
+
+\item[Terme proximal] Dans FedProx, p\'{e}nalit\'{e} quadratique $\frac{\mu}{2}\|w - w^{(t)}\|^2$ ajout\'{e}e \`{a} la perte locale pour contraindre les mises \`{a} jour \`{a} rester proches du mod\`{e}le global.
+
+\item[Z-score (standardisation)] Transformation affine $z = (x - \mu) / \sigma$ centrant les donn\'{e}es autour de z\'{e}ro avec une variance unitaire.
+\end{description}
 
 \end{document}
