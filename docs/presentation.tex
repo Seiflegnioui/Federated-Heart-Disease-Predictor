@@ -7,8 +7,7 @@
 \documentclass[aspectratio=169,11pt]{beamer}
 
 % ----- Th\`{e}me et couleurs -----
-\usetheme{Madrid}
-\usecolortheme{whale}
+\usetheme[progressbar=frametitle,block=fill]{metropolis}
 
 % ----- Packages -----
 \usepackage[T1]{fontenc}
@@ -19,45 +18,39 @@
 \usepackage{multirow}
 \usepackage{array}
 \usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta, shapes.geometric, calc}
 \usepackage{xcolor}
 \usepackage{caption}
+\usepackage{pifont}
 
-% ----- Couleurs personnalis\'{e}es -----
-\definecolor{darkblue}{RGB}{0,51,102}
-\definecolor{lightblue}{RGB}{220,235,252}
-\definecolor{accentblue}{RGB}{30,100,180}
-\setbeamercolor{frametitle}{bg=darkblue,fg=white}
-\setbeamercolor{title}{bg=darkblue,fg=white}
-\setbeamercolor{block title}{bg=accentblue,fg=white}
-\setbeamercolor{block body}{bg=lightblue,fg=black}
-\setbeamercolor{block title alerted}{bg=red!70!black,fg=white}
-\setbeamercolor{block body alerted}{bg=red!5,fg=black}
-\setbeamercolor{block title example}{bg=green!40!black,fg=white}
-\setbeamercolor{block body example}{bg=green!5,fg=black}
+% ----- Couleurs personnalis\'{e}es (Metropolis) -----
+\definecolor{mDarkTeal}{HTML}{23373B}
+\definecolor{mLightBrown}{HTML}{EB811B}
+\definecolor{mLightGreen}{HTML}{14B03D}
+\definecolor{mRed}{HTML}{D12A3A}
+
+\setbeamercolor{normal text}{fg=mDarkTeal,bg=black!2}
+\setbeamercolor{alerted text}{fg=mLightBrown}
+\setbeamercolor{example text}{fg=mLightGreen}
+\setbeamercolor{frametitle}{bg=mDarkTeal, fg=white}
+\setbeamercolor{progress bar}{fg=mLightBrown, bg=mDarkTeal!10}
+\setbeamercolor{title separator}{fg=mLightBrown, bg=mDarkTeal}
+
+% Blocks
+\setbeamercolor{block title}{fg=white, bg=mDarkTeal}
+\setbeamercolor{block body}{fg=mDarkTeal, bg=mDarkTeal!10}
+\setbeamercolor{block title alerted}{fg=white, bg=mRed}
+\setbeamercolor{block body alerted}{fg=mDarkTeal, bg=mRed!10}
+\setbeamercolor{block title example}{fg=white, bg=mLightGreen}
+\setbeamercolor{block body example}{fg=mDarkTeal, bg=mLightGreen!10}
 
 % ----- Informations du document -----
 \title[FL -- Maladies Cardiaques]{Apprentissage F\'{e}d\'{e}r\'{e} pour la Pr\'{e}diction\\de Maladies Cardiaques}
 \subtitle{Simulation m\'{e}dicale avec donn\'{e}es distribu\'{e}es}
-\author[Legnioui \& Sarraf]{Sifeddine \textsc{Legnioui} \and Youssef \textsc{Sarraf}}
-\institute[]{Module : Optimisation\\Universit\'{e} --- Ann\'{e}e 2025--2026}
+\author[Legnioui \& Sarraf]{Sifeddine \textsc{Legnioui} \and Youssef \textsc{Sarraf} \\ \small {Module : Optimisation \\ Universit\'{e} --- Ann\'{e}e 2025--2026}}
 \date{20 juin 2026}
 
 % ----- Num\'{e}rotation -----
-\setbeamertemplate{footline}{%
-  \leavevmode%
-  \hbox{%
-    \begin{beamercolorbox}[wd=.333\paperwidth,ht=2.5ex,dp=1ex,center]{author in head/foot}%
-      \usebeamerfont{author in head/foot}\insertshortauthor
-    \end{beamercolorbox}%
-    \begin{beamercolorbox}[wd=.334\paperwidth,ht=2.5ex,dp=1ex,center]{title in head/foot}%
-      \usebeamerfont{title in head/foot}\insertshorttitle
-    \end{beamercolorbox}%
-    \begin{beamercolorbox}[wd=.333\paperwidth,ht=2.5ex,dp=1ex,right]{date in head/foot}%
-      \usebeamerfont{date in head/foot}\insertshortdate{}\hspace*{2em}
-      \insertframenumber{} / \inserttotalframenumber\hspace*{2ex}
-    \end{beamercolorbox}}%
-  \vskip0pt%
-}
 \setbeamertemplate{navigation symbols}{}
 
 \begin{document}
@@ -204,8 +197,19 @@
     \begin{column}{0.45\textwidth}
       \begin{figure}
         \centering
-        \includegraphics[width=0.85\textwidth]{example-image}
-        \caption{Architecture serveur $\leftrightarrow$ 8 h\^{o}pitaux}
+        \resizebox{0.9\textwidth}{!}{%
+        \begin{tikzpicture}[
+            server/.style={circle, draw=mDarkTeal, fill=mDarkTeal!20, thick, minimum size=1.8cm, align=center, font=\bfseries},
+            client/.style={rectangle, rounded corners, draw=mLightBrown, fill=mLightBrown!20, thick, minimum size=1cm, align=center},
+            arrow/.style={<->, >=Stealth, thick, mDarkTeal!70}
+          ]
+          \node[server] (S) {Serveur\\Global};
+          \foreach \a/\i in {0/1, 45/2, 90/3, 135/4, 180/5, 225/6, 270/7, 315/8} {
+             \node[client] (H\i) at (\a:2.8cm) {H\^{o}p \i};
+             \draw[arrow] (S) -- (H\i);
+          }
+        \end{tikzpicture}
+        }
       \end{figure}
     \end{column}
   \end{columns}
