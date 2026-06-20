@@ -265,8 +265,7 @@
     \begin{column}{0.45\textwidth}
       \begin{figure}
         \centering
-        % PLACEHOLDER POUR L'IMAGE DE DISTRIBUTION IID
-        \includegraphics[width=0.9\textwidth]{example-image}
+        \includegraphics[width=0.9\textwidth]{images/class_dist_iid.png}
         \caption{\color{fgWhite}\footnotesize Distribution IID des classes}
       \end{figure}
     \end{column}
@@ -287,8 +286,7 @@
     \begin{column}{0.45\textwidth}
       \begin{figure}
         \centering
-        % PLACEHOLDER POUR L'IMAGE DE DISTRIBUTION NON-IID
-        \includegraphics[width=0.9\textwidth]{example-image}
+        \includegraphics[width=0.9\textwidth]{images/class_dist_noniid.png}
         \caption{\color{fgWhite}\footnotesize Distribution Non-IID asym\'{e}trique}
       \end{figure}
     \end{column}
@@ -342,44 +340,26 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}{R\'{e}sultats : Courbes d'Apprentissage (Loss)}
+\begin{frame}{R\'{e}sultats : Convergence (Loss \& Accuracy)}
   \begin{columns}
     \begin{column}{0.5\textwidth}
       \begin{figure}
         \centering
-        % PLACEHOLDER POUR COURBES IID
-        \includegraphics[width=\textwidth]{example-image}
-        \caption{\color{fgWhite}\footnotesize Pertes (Loss) en IID}
+        \includegraphics[width=\textwidth]{images/loss_convergence.png}
+        \caption{\color{fgWhite}\footnotesize \'{E}volution de la Perte (Loss)}
       \end{figure}
     \end{column}
     \begin{column}{0.5\textwidth}
       \begin{figure}
         \centering
-        % PLACEHOLDER POUR COURBES NON-IID
-        \includegraphics[width=\textwidth]{example-image}
-        \caption{\color{fgWhite}\footnotesize Pertes (Loss) en Non-IID}
+        \includegraphics[width=\textwidth]{images/accuracy_convergence.png}
+        \caption{\color{fgWhite}\footnotesize \'{E}volution de la Pr\'{e}cision (Accuracy)}
       \end{figure}
     \end{column}
   \end{columns}
 \end{frame}
 
-\begin{frame}{Analyse de la Divergence Locale}
-  \begin{columns}
-    \begin{column}{0.5\textwidth}
-      \begin{block}{Le Ph\'{e}nom\`{e}ne de "D\'{e}rive"}
-        L'analyse de la norme $L_2$ prouve que FedProx maintient les mod\`{e}les hospitaliers "group\'{e}s", l\`{a} o\`{u} Local SGD explose.
-      \end{block}
-    \end{column}
-    \begin{column}{0.45\textwidth}
-      \begin{figure}
-        \centering
-        % PLACEHOLDER POUR COURBE DIVERGENCE
-        \includegraphics[width=\textwidth]{example-image}
-        \caption{\color{fgWhite}\footnotesize \'{E}volution de la Divergence $L_2$}
-      \end{figure}
-    \end{column}
-  \end{columns}
-\end{frame}
+
 
 \begin{frame}{Efficacit\'{e} R\'{e}seau \& Co\^{u}t de Communication}
   \begin{exampleblock}{Un syst\`{e}me taill\'{e} pour le monde r\'{e}el}
